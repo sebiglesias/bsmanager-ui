@@ -1,8 +1,18 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-</div>
-<app-products></app-products>
-
+<nav>
+  <div class="nav-wrapper">
+    <a routerLink="/" class="brand-logo logo">{{title}}</a>
+    <ul class="right hide-on-med-and-down">
+      <li><a routerLink="/profile">Profile</a></li>
+      <li><a routerLink="/users">Users</a></li>
+      <li><a routerLink="/groups">Groups</a></li>
+      <li><a routerLink="/stores">Stores</a></li>
+      <li><a routerLink="/products">Catalogue</a></li>
+      <li><a routerLink="/categories">Categories</a></li>
+      <li><a routerLink="/sales">Sales</a></li>
+      <li><a routerLink="/stock">Inventory</a></li>
+      <li><a routerLink="/login">Login</a></li>
+      <li><a routerLink="/logout"> Logout </a></li>
+    </ul>
+  </div>
+</nav>
+<router-outlet></router-outlet>

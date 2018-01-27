@@ -1,0 +1,47 @@
+<div>
+  <h2>User Details</h2>
+  <div><span>id: </span></div>
+  <div>
+    <label>Name:
+      <input type="text" [(ngModel)]="group.name" placeholder="name"/>
+    </label>
+  </div>
+  <div>
+    <label>Stores:
+      <input type="checkbox" [(ngModel)]="group.stores"/>
+    </label>
+  </div>
+  <div>
+    <label>Groups:
+      <input type="checkbox" [(ngModel)]="group.groups"/>
+    </label>
+  </div>
+  <div>
+    <label>Products:
+      <input type="checkbox" [(ngModel)]="group.products"/>
+    </label>
+  </div>
+  <div>
+    <label>Users:
+      <input type="checkbox" [(ngModel)]="group.users"/>
+    </label>
+  </div>
+  <div>
+    <label>Brands:
+      <input type="checkbox" [(ngModel)]="group.brands"/>
+    </label>
+  </div>
+  <div>
+    <label>Categories:
+      <input type="checkbox" [(ngModel)]="group.categories"/>
+    </label>
+  </div>
+  <div>
+    <label>Units:
+      <input type="checkbox" [(ngModel)]="group.units"/>
+    </label>
+  </div>
+</div>
+<div *ngIf="!group">
+  <p>No group matches that id. Please return to home</p>
+</div>

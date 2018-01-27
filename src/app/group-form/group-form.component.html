@@ -1,0 +1,60 @@
+<div class="modal-header center-align col s12 red white-text">
+  <h1 class="col s12 title">Create a new group</h1>
+</div>
+<div class="modal-content">
+  <div class="center-align">
+      <form [formGroup]="groupForm" materialize class="col s12">
+        <div class="row center-align form-group">
+          <div class="input-field col s6">
+            <i class="material-icons prefix">input</i>
+            <input #name placeholder="Choose a groupName" id="name" type="text" class="validate form-control" formControlName="name" data-length="20">
+            <label for="name">Group name</label>
+          </div>
+        </div>
+        <div class="row form-group">
+          <p>
+            What can a user with this group work with?
+          </p>
+          <div class="col s4">
+            <p>
+              <input #users type="checkbox" class="form-control" id="users" checked="checked" formControlName="users" />
+              <label for="users">Users</label>
+            </p>
+            <p>
+              <input #brands type="checkbox" class="form-control" id="brands" checked="checked" formControlName="brands"/>
+              <label for="brands">Brands</label>
+            </p>
+          </div>
+          <div class="col s4">
+            <p>
+              <input #units type="checkbox" class="form-control" id="units" checked="checked" formControlName="units"/>
+              <label for="units">Units</label>
+            </p>
+            <p>
+              <input #stores type="checkbox" class="form-control" id="stores" checked="checked" formControlName="stores"/>
+              <label for="stores">Stores</label>
+            </p>
+            <p>
+              <input #categories type="checkbox" class="form-control" id="categories" checked="checked" formControlName="categories"/>
+              <label for="categories">Categories</label>
+            </p>
+          </div>
+          <div class="col s4">
+            <p>
+              <input #groups type="checkbox" class="form-control" id="groups" checked="checked" formControlName="groups"/>
+              <label for="groups">Groups</label>
+            </p>
+            <p>
+              <input #products type="checkbox" class="form-control" id="products" checked="checked" formControlName="products"/>
+              <label for="products">Products</label>
+            </p>
+          </div>
+        </div>
+      <div class="modal-footer">
+        <button class="waves-effect waves-light btn element modal-close green" (click)="onSubmit()">Submit</button>
+        <button class="modal-close waves-effect  waves-light btn red" (click)="revert()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
