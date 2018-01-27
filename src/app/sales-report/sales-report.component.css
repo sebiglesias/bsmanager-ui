@@ -1,0 +1,9 @@
+.lateral-navbar {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  border-right: solid black 3px;
+}
+.element {
+  margin-left: 10px;
+}

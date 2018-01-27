@@ -1,5 +1,6 @@
-<div>
-  <h2>User Details</h2>
+<div class="container">
+  <div class="card">
+  <h2 class="center-align">User Details</h2>
   <div><span>id: </span></div>
   <div>
     <label>Name:
@@ -41,7 +42,8 @@
       <input type="checkbox" [(ngModel)]="group.units"/>
     </label>
   </div>
-</div>
-<div *ngIf="!group">
-  <p>No group matches that id. Please return to home</p>
+  <div *ngIf="!group">
+    <p>No group matches that id. Please return to home</p>
+  </div>
+  </div>
 </div>

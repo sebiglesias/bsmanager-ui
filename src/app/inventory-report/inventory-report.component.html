@@ -1,3 +1,36 @@
-<p>
-  inventory-report works!
-</p>
+<div class="element">
+  <div class="row main-bar">
+    <h3 class="title">Inventory</h3>
+    <ul>
+      <li>
+        <a class='dropdown-button btn' href='#' data-activates='stores'>Store</a>
+      </li>
+      <li>
+        <a class="btn">Export report</a>
+      </li>
+      <li>
+        <a class="btn">Import stock</a>
+      </li>
+    </ul>
+    <!-- Dropdown Structure -->
+    <ul id='stores' class='dropdown-content'>
+      <li><a>one</a></li>
+      <li class="divider"></li>
+      <li><a>two</a></li>
+    </ul>
+  </div>
+  <div class="row content">
+    <table class="highlight responsive-table element">
+      <thead>
+        <tr>
+          <th>Some1</th>
+          <th>Some2</th>
+          <th>Some3</th>
+          <th>Some4</th>
+          <th>Some5</th>
+          <th>Some6</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+</div>
