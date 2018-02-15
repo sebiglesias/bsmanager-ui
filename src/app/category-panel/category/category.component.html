@@ -1,0 +1,38 @@
+<div class="container">
+  <h3 class="element">Category Management Panel</h3>
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-success myButton" (click)="createCategoryOpenModal()">
+    Create a new category
+  </button>
+  <!-- Create Modal -->
+  <app-category-create-modal #createCategoryModal id="createCategory" [showModal]="isCreateModalOpen" [title]="'Create category'" (createdCategoryAlert)="createdCategoryAlert($event)"></app-category-create-modal>
+  <!-- Edit modal -->
+  <app-category-edit-modal #editCategoryModal id="editCategory" [showModal]="isEditModalOpen" [title]="'Edit category'" (updatedCategoryAlert)="updatedCategoryAlert($event)"></app-category-edit-modal>
+
+  <!-- Delete Modal -->
+  <app-category-delete-modal #deleteCategoryModal id="deleteCategory" [showModal]="isDeleteModalOpen" [title]="'Delete category'" (deletedCategoryAlert)="deletedCategoryAlert($event)"></app-category-delete-modal>
+
+  <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Plural name</th>
+      <th>Singular name</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let category of categories">
+      <td>{{ category.id }}</td>
+      <td>{{ category.plural_name}}</td>
+      <td>{{ category.singular_name}}</td>
+      <td>
+        <div class="btn-group">
+          <button type="button" class="btn btn-default btn" (click)="editRowOpenModal(category)"><i class="material-icons">edit</i></button>
+          <button type="button" class="btn btn-default btn" (click)="deleteRowOpenModal(category)"><i class="material-icons">delete</i></button>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

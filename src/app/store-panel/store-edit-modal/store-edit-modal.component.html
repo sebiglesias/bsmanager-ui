@@ -1,0 +1,57 @@
+<div class="modal-backdrop fade in" [style.display]="showModal ? 'block' : 'none'"></div>
+<div class="modal" tabindex="-1" role="dialog" style="display: block" [style.display]="showModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">{{title + " - Store: " + store.id + " " + store.name}}</span>
+        <i class="icon-cancel fr" data-dismiss="modal" aria-label="Close" (click)="cancelAction()"></i>
+        <p *ngIf="subTitle">{{subTitle}}</p>
+      </div>
+      <div class="modal-body">
+        <ng-content></ng-content>
+        <form [formGroup]="storeForm" (ngSubmit)="this.editStore()">
+          <div class="form-group">
+            <label for="name">Store name</label>
+            <input
+              placeholder="Choose a store name"
+              id="name"
+              type="text"
+              class="form-control"
+              data-length="20"
+              required
+              name="name"
+              [(ngModel)]="store.name"
+              formControlName="name"
+              value="{{store.name}}"
+            >
+          </div>
+          <div class="form-group">
+            <label for="address">Store address</label>
+            <input
+              placeholder="Choose a store address"
+              id="address"
+              type="text"
+              class="form-control"
+              data-length="30"
+              required
+              name="address"
+              [(ngModel)]="store.address"
+              formControlName="address"
+              value="{{store.address}}"
+            >
+          </div>
+          <div class="modal-footer">
+            <div class="popup-footer">
+              <button class="btn btn-danger"  aria-label="Close" (click)="this.hide()">
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-primary" aria-label="Close" (click)="this.hide()">
+                Update
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

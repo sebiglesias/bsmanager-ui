@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
 
 @Component({
   selector: 'app-sales-report',
@@ -9,7 +9,5 @@ export class SalesReportComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  }
-
+  ngOnInit(): void {  }
 }

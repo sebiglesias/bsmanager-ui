@@ -1,0 +1,56 @@
+<div class="container">
+  <h3 class="element">Store Management Panel</h3>
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-success myButton" (click)="createStoreOpenModal()">
+    Create a new store
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Create a new Store</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <app-store-form (formSubmission)="formSubmission($event)" ></app-store-form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-store-create-modal #createStoreModal id="createStore" [showModal]="isCreateModalOpen" [title]="'Create store'" (createdStoreAlert)="createdStoreAlert($event)"></app-store-create-modal>
+
+  <!-- Edit modal -->
+  <app-store-edit-modal #editStoreModal id="editStore" [showModal]="isEditModalOpen" [title]="'Edit store'" (updatedStoreAlert)="updatedStoreAlert($event)"></app-store-edit-modal>
+
+  <!-- Delete Modal -->
+  <app-store-delete-modal #deleteStoreModal id="deleteStore" [showModal]="isDeleteModalOpen" [title]="'Delete store'" (deletedStoreAlert)="deletedStoreAlert($event)"></app-store-delete-modal>
+
+  <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Address</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let store of stores">
+      <td>{{ store.id }}</td>
+      <td>{{ store.name}}</td>
+      <td>{{ store.address}}</td>
+      <td>
+        <div class="btn-group">
+          <button type="button" class="btn btn-default btn" (click)="editRowOpenModal(store)"><i class="material-icons">edit</i></button>
+          <button type="button" class="btn btn-default btn" (click)="deleteRowOpenModal(store)"><i class="material-icons">delete</i></button>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

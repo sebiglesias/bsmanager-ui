@@ -1,0 +1,11 @@
+.container {
+  margin-top: 70px;
+}
+.modal-header {
+  background: #ee6e73;
+}
+
+.title {
+  padding-bottom: 10px;
+  padding-top: 10px;
+}

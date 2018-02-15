@@ -1,9 +1,10 @@
 <div class="element">
   <div class="row main-bar">
     <h3 class="title">Inventory</h3>
+    <h5>Store Info: </h5>
     <ul>
       <li>
-        <a class='dropdown-button btn' href='#' data-activates='stores'>Store</a>
+        <a class='dropdown-button btn' href='#' data-activates='stores'>Change store</a>
       </li>
       <li>
         <a class="btn">Export report</a>
@@ -19,18 +20,32 @@
       <li><a>two</a></li>
     </ul>
   </div>
-  <div class="row content">
-    <table class="highlight responsive-table element">
-      <thead>
-        <tr>
-          <th>Some1</th>
-          <th>Some2</th>
-          <th>Some3</th>
-          <th>Some4</th>
-          <th>Some5</th>
-          <th>Some6</th>
-        </tr>
-      </thead>
-    </table>
-  </div>
+  <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Code</th>
+      <th>Name</th>
+      <th>Model</th>
+      <th>Series</th>
+      <th>Brand</th>
+      <th>Category</th>
+      <th>Unit</th>
+      <th>Number</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let product of products">
+      <td>{{ product.id }}</td>
+      <td>{{ product.code}}</td>
+      <td>{{ product.name}}</td>
+      <td>{{ product.model}}</td>
+      <td>{{ product.series}}</td>
+      <td>{{ product.brand}}</td>
+      <td>{{ product.category}}</td>
+      <td>{{ product.unit}}</td>
+      <td>{{ product.number}}</td>
+    </tr>
+    </tbody>
+  </table>
 </div>

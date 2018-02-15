@@ -1,4 +1,23 @@
+.product-container {
+  display: flex;
+}
+
+.lateral-navbar {
+  float: left;
+  height: 100%;
+}
+
+.content {
+  float: right;
+  height: 100%;
+}
 .products {
-  border-right: solid black 3px;
-  min-height: 100vh;
+  border: solid 0.5px black;
+}
+
+.buttons {
+
+}
+.result {
+
 }

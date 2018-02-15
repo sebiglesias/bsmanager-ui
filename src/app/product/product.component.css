@@ -1,9 +1,25 @@
+.product-container {
+  display: flex;
+}
+
 .lateral-navbar {
-  background: #444444;
+  float: left;
   height: 100%;
 }
 
 .content {
-  background: #26a69a;
+  float: right;
   height: 100%;
+}
+
+.options {
+  border-right: solid 0.5px black;
+}
+
+.options-title {
+  align-content: center;
+}
+
+.search-options {
+  align-content: left;
 }

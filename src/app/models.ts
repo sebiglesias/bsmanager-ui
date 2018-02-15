@@ -1,6 +1,7 @@
 export interface Group {
   id?: number;
   name: string;
+  isEmployee: boolean;
   stores: boolean;
   groups: boolean;
   products: boolean;
@@ -17,7 +18,7 @@ export interface User {
   birthday: Date;
   email: string;
   telephone: string;
-  groups: Group[];
+  groups: Store[];
 }
 
 export interface Store {

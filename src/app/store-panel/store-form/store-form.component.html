@@ -1,0 +1,37 @@
+
+
+<div class="modal-body">
+  <form [formGroup]="storeForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Store name</label>
+      <input
+        placeholder="Choose a store name"
+        id="name"
+        type="text"
+        class="form-control"
+        data-length="20"
+        required
+        name="name"
+        [(ngModel)]="store.name"
+        formControlName="name"
+      >
+    </div>
+    <div class="form-group">
+      <label for="address">Store address</label>
+      <input
+        placeholder="Choose a store address"
+        id="address"
+        type="text"
+        class="form-control"
+        data-length="20"
+        required
+        name="address"
+        [(ngModel)]="store.address"
+        formControlName="address"
+      >
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary" aria-label="Close" data-dismiss="modal">Submit</button>
+    </div>
+  </form>
+</div>

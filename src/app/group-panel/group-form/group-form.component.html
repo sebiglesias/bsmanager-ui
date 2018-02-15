@@ -1,0 +1,75 @@
+
+
+<div class="modal-body">
+  <form [formGroup]="groupForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Group name</label>
+      <input
+        placeholder="Choose a group name"
+        id="name"
+        type="text"
+        class="form-control"
+        data-length="20"
+        required
+        name="name"
+        [(ngModel)]="group.name"
+        formControlName="name"
+      >
+    </div>
+    <br>
+    <h4 class="align-content-center">
+      Is it an employee?
+    </h4>
+    <br>
+    <div class="form-row">
+      <div class="col">
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="isEmployee" formControlName="isEmployee" [(ngModel)]="group.isEmployee"/>
+          <label class="form-check-label" for="isEmployee">Is an employee</label>
+        </div>
+      </div>
+    </div>
+    <br>
+    <h4 *ngIf="group.isEmployee" class="align-content-center">
+      What can a user with this group work with?
+    </h4>
+    <br>
+    <div *ngIf="group.isEmployee" class="form-row">
+      <div class="col">
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="users" formControlName="users" [(ngModel)]="group.users"/>
+          <label class="form-check-label" for="users">Users</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="brands" formControlName="brands" [(ngModel)]="group.brands"/>
+          <label class="form-check-label" for="brands">Brands</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="units" formControlName="units" [(ngModel)]="group.units"/>
+          <label class="form-check-label" for="units">Units</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="stores" formControlName="stores" [(ngModel)]="group.stores"/>
+          <label class="form-check-label" for="stores">Stores</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="categories" formControlName="categories" [(ngModel)]="group.categories"/>
+          <label class="form-check-label" for="categories">Categories</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="groups" formControlName="groups" [(ngModel)]="group.groups"/>
+          <label class="form-check-label" for="groups">Groups</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="products" formControlName="products" [(ngModel)]="group.products"/>
+          <label class="form-check-label" for="products">Products</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary" aria-label="Close" data-dismiss="modal">Submit</button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,37 @@
+
+
+<div class="modal-body">
+  <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="plural_name">Category plural name</label>
+      <input
+        placeholder="Choose a category plural name"
+        id="plural_name"
+        type="text"
+        class="form-control"
+        data-length="20"
+        required
+        name="plural_name"
+        [(ngModel)]="category.plural_name"
+        formControlName="plural_name"
+      >
+    </div>
+    <div class="form-group">
+      <label for="singular_name">Category singular name</label>
+      <input
+        placeholder="Choose a categort singular name"
+        id="singular_name"
+        type="text"
+        class="form-control"
+        data-length="20"
+        required
+        name="singular_name"
+        [(ngModel)]="category.singular_name"
+        formControlName="singular_name"
+      >
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary" aria-label="Close" data-dismiss="modal">Submit</button>
+    </div>
+  </form>
+</div>
