@@ -1,50 +1,40 @@
-<div class="element">
-  <div class="row main-bar">
-    <h3 class="title">Inventory</h3>
-    <h5>Store Info: </h5>
-    <ul>
-      <li>
-        <a class='dropdown-button btn' href='#' data-activates='stores'>Change store</a>
-      </li>
-      <li>
-        <a class="btn">Export report</a>
-      </li>
-      <li>
-        <a class="btn">Import stock</a>
-      </li>
-    </ul>
-    <!-- Dropdown Structure -->
-    <ul id='stores' class='dropdown-content'>
-      <li><a>one</a></li>
-      <li class="divider"></li>
-      <li><a>two</a></li>
-    </ul>
-  </div>
+<div class="container">
+  <h3 class="element">Inventory Management Panel</h3>
+
   <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
     <thead>
     <tr>
       <th>ID</th>
-      <th>Code</th>
       <th>Name</th>
-      <th>Model</th>
-      <th>Series</th>
-      <th>Brand</th>
-      <th>Category</th>
-      <th>Unit</th>
-      <th>Number</th>
+      <th>Employee</th>
+      <th>Stores</th>
+      <th>Groups</th>
+      <th>Products</th>
+      <th>Users</th>
+      <th>Brands</th>
+      <th>Categories</th>
+      <th>Units</th>
+      <th>Actions</th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let product of products">
-      <td>{{ product.id }}</td>
-      <td>{{ product.code}}</td>
-      <td>{{ product.name}}</td>
-      <td>{{ product.model}}</td>
-      <td>{{ product.series}}</td>
-      <td>{{ product.brand}}</td>
-      <td>{{ product.category}}</td>
-      <td>{{ product.unit}}</td>
-      <td>{{ product.number}}</td>
+    <tr *ngFor="let group of groups">
+      <td>{{ group.id }}</td>
+      <td>{{ group.name}}</td>
+      <td>{{ group.isEmployee }}</td>
+      <td>{{ group.stores}}</td>
+      <td>{{ group.groups}}</td>
+      <td>{{ group.products}}</td>
+      <td>{{ group.users}}</td>
+      <td>{{ group.brands}}</td>
+      <td>{{ group.categories}}</td>
+      <td>{{ group.units}}</td>
+      <td>
+        <div class="btn-group">
+          <button type="button" class="btn btn-default btn" (click)="editRowOpenModal(group)"><i class="material-icons">edit</i></button>
+          <button type="button" class="btn btn-default btn" (click)="deleteRowOpenModal(group)"><i class="material-icons">delete</i></button>
+        </div>
+      </td>
     </tr>
     </tbody>
   </table>

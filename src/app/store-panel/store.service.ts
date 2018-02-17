@@ -19,7 +19,6 @@ export class StoreService {
   }
 
   public createStore(g: Store): Observable<Store> {
-    console.log(g);
     return this.http
       .post<Store>(storeUrl, g);
   }
@@ -39,6 +38,12 @@ export class StoreService {
   public deleteStoreById(groupId: number) {
     return this.http
       .delete(storeUrl + '/' + groupId)
+      .catch(this.handleError);
+  }
+
+  public getStoreById(storeId: number): Observable<Store> {
+    return this.http
+      .get(storeUrl + '/' + storeId)
       .catch(this.handleError);
   }
 

@@ -9,7 +9,7 @@ import {Router} from '@angular/router';
 export class AppComponent {
   router;
 
-  constructor(router: Router) {
+  constructor(router: Router, ) {
     this.router = router;
   }
   title = 'Business Manager';

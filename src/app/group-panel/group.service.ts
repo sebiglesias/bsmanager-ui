@@ -45,4 +45,10 @@ export class GroupService {
     console.error('GroupService::handleError', error);
     return Observable.throw(error);
   }
+
+  getGroupById(id: number): Observable<Group> {
+    return this.http
+      .get(groupUrl + '/' + id)
+      .catch(this.handleError);
+  }
 }

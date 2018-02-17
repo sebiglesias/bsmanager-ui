@@ -1,5 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-
+import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {User} from '../../models';
+import {Subject} from 'rxjs/Subject';
+import {DataTableDirective} from 'angular-datatables';
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import {UserCreateModalComponent} from '../user-create-modal/user-create-modal.component';
+import {UserDeleteModalComponent} from '../user-delete-modal/user-delete-modal.component';
+import {UserEditModalComponent} from '../user-edit-modal/user-edit-modal.component';
+import {UserService} from '../user.service';
 
 @Component({
   selector: 'app-user',
@@ -8,9 +15,160 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserComponent implements OnInit {
 
-  constructor() { }
+  users: User[] = [];
 
-  ngOnInit() {
+  @ViewChild(DataTableDirective)
+  dtElement: DataTableDirective;
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject();
+
+  @ViewChild('editUserModal') editModal: UserEditModalComponent;
+  @ViewChild('deleteUserModal') deleteModal: UserDeleteModalComponent;
+  @ViewChild('createUserModal') createModal: UserCreateModalComponent;
+
+  constructor(private userService: UserService, public toastr: ToastsManager, vcr: ViewContainerRef) {
+    this.toastr.setRootViewContainerRef(vcr);
   }
 
+  public ngOnInit(): void {
+    this.getUsers();
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 2
+    };
+  }
+
+  getUsers(): void {
+    this.userService
+      .getAllUsers()
+      .subscribe(users => {
+        this.users = users;
+        this.dtTrigger.next();
+      });
+  }
+
+  editRowOpenModal(user: User) {
+    this.editModal.setUser(user);
+    this.editModal.show();
+  }
+
+  deleteRowOpenModal(user: User) {
+    this.deleteModal.setUser(user);
+    this.deleteModal.show();
+  }
+
+  createUserOpenModal() {
+    this.createModal.show();
+  }
+
+  formSubmission(submitted: boolean) {
+    this.userService
+      .getAllUsers()
+      .subscribe(
+        users => {
+          this.users = users;
+          this.reRender();
+          this.submittedToast(submitted);
+        },
+        error => this.submittedToast(false),
+        () => console.log('completed SubmitUser'));
+  }
+
+  deletedUserAlert(deleted: boolean) {
+    this.userService
+      .getAllUsers()
+      .subscribe(
+        users => {
+          this.users = users;
+          this.reRender();
+          this.deleteToast(deleted);
+        },
+        error => this.deleteToast(false),
+        () => console.log('completed DeleteUser'));
+  }
+
+  updatedUserAlert(deleted: boolean) {
+    this.userService
+      .getAllUsers()
+      .subscribe(
+        users => {
+          this.users = users;
+          this.reRender();
+          this.updatedToast(deleted);
+        },
+        error => this.updatedToast(false),
+        () => console.log('completed UpdatedUser'));
+  }
+
+  createdUserAlert(created: boolean) {
+    this.userService
+      .getAllUsers()
+      .subscribe(
+        users => {
+          this.users = users;
+          this.reRender();
+          this.createdToast(created);
+        },
+        error => this.updatedToast(false),
+        () => console.log('completed CreatedUser'));
+  }
+
+  reRender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.destroy();
+      this.dtTrigger.next();
+    });
+  }
+
+  deleteToast(deleted: boolean) {
+    console.log('entre a deletedToast');
+    if (deleted) {
+      this.toastr.success('Success!', 'The user was deleted correctly.');
+    } else {
+      this.toastr.error('Couldn\'t delete user!', 'There is something wrong with your connection.');
+    }
+  }
+
+  submittedToast(submitted: boolean) {
+    console.log('entre a submittedToast');
+    if (submitted) {
+      this.toastr.success('Success!', 'The user was added correctly.');
+    } else {
+      this.toastr.error('Couldn\'t add user!', 'There is something wrong with your connection.');
+    }
+  }
+
+  updatedToast(updated: boolean) {
+    console.log('entre a updateToast');
+    if (updated) {
+      this.toastr.success('Success!', 'The user was updated correctly.');
+    } else {
+      this.toastr.error('Couldn\'t update user!', 'There is something wrong with your connection.');
+    }
+  }
+
+  createdToast(created: boolean) {
+    console.log('entre a createdToast');
+    if (created) {
+      this.toastr.success('Success!', 'The user was created correctly.');
+    } else {
+      this.toastr.error('Couldn\'t created user!', 'There is something wrong with your connection.');
+    }
+  }
+
+  getGroupString(user: User): string {
+    let finalString = '';
+    if (user.groups !== undefined && user.groups !== null) {
+      user.groups.forEach(group => finalString = finalString + '| ' + group.name);
+    }
+    return finalString;
+  }
+
+  getStoreString(user: User): string {
+    let finalString = '';
+    if (user.stores !== undefined && user.stores !== null) {
+      user.stores.forEach(store => finalString = finalString + '| ' + store.name);
+    }
+    return finalString;
+  }
 }

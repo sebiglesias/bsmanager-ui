@@ -1,0 +1,16 @@
+<div class="container">
+  <h3 class="element">Sales Management Panel</h3>
+  <form (submit)="filterById()">
+    <label>
+      From
+      <input type="date" name="from" id="from" [(ngModel)]="from" />
+    </label>
+    <label>
+      To
+      <input type="date" name="to" id="to" [(ngModel)]="to" />
+    </label>
+    <button class="btn btn-primary" type="submit">Filter by ID</button>
+  </form>
+  <br />
+  <table datatable [dtOptions]="dtOptions" class="row-border hover"></table>
+</div>

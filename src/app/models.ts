@@ -13,12 +13,14 @@ export interface Group {
 export interface User {
   id?: number;
   name: string;
+  password: string;
   cuit: string;
   address: string;
   birthday: Date;
   email: string;
   telephone: string;
-  groups: Store[];
+  groups: Group[];
+  stores: Store[];
 }
 
 export interface Store {

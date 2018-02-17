@@ -9,7 +9,7 @@ import { ProtectedComponent } from './protected/protected.component';
 import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { UserDetailComponent } from './user-panel/user-detail/user-detail.component';
-import { SalesReportComponent } from './sales-report/sales-report.component';
+import { SalesReportComponent } from './sales-panel/sales-report/sales-report.component';
 import { InventoryReportComponent } from './inventory-report/inventory-report.component';
 import { GroupComponent } from './group-panel/group/group.component';
 import {GroupService} from './group-panel/group.service';
@@ -20,7 +20,7 @@ import { ProductComponent } from './product/product.component';
 import { UserComponent } from './user-panel/user/user.component';
 import { StoreComponent } from './store-panel/store/store.component';
 import { CategoryComponent } from './category-panel/category/category.component';
-import { PosComponent } from './pos/pos.component';
+import { PosComponent } from './sales-panel/pos/pos.component';
 import { DataTablesModule } from 'angular-datatables';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -44,7 +44,9 @@ import {CategoryService} from './category-panel/category.service';
 import { UserCreateModalComponent } from './user-panel/user-create-modal/user-create-modal.component';
 import { UserEditModalComponent } from './user-panel/user-edit-modal/user-edit-modal.component';
 import { UserDeleteModalComponent } from './user-panel/user-delete-modal/user-delete-modal.component';
-
+import {UserService} from './user-panel/user.service';
+import { MyDatePickerModule } from 'mydatepicker';
+import { SalesDetailComponent } from './sales-panel/sales-detail/sales-detail.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
@@ -91,7 +93,8 @@ const appRoutes: Routes = [
     CategoryFormComponent,
     UserCreateModalComponent,
     UserEditModalComponent,
-    UserDeleteModalComponent
+    UserDeleteModalComponent,
+    SalesDetailComponent
   ],
   imports: [
     // MaterializeModule,
@@ -110,8 +113,9 @@ const appRoutes: Routes = [
     ModalModule.forRoot(),
     BrowserAnimationsModule,
     ToastModule.forRoot(),
+    MyDatePickerModule
   ],
-  providers: [GroupService, StoreService, CategoryService],
+  providers: [GroupService, StoreService, CategoryService, UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
