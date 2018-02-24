@@ -106,7 +106,7 @@ export class ProfileComponent implements OnInit {
     this.userService.updateUser(newUser).subscribe( user => {
       this.throwToast(true);
       this.authService.setUser(user);
-    });
+    }, err => console.log(err));
 
   }
 

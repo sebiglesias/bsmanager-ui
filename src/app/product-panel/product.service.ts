@@ -51,4 +51,11 @@ export class ProductService {
       .get(productUrl + '/' + id)
       .catch(this.handleError);
   }
+
+  addStock(id: number, units: number) {
+    this.getProductById(id).subscribe( p => {
+      p.quantity += units;
+      this.updateProduct(p);
+    });
+  }
 }

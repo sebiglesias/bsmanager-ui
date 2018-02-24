@@ -1,3 +1,109 @@
-<p>
-  product-import-modal works!
-</p>
+<div class="modal-backdrop fade in" [style.display]="showModal ? 'block' : 'none'"></div>
+<div class="modal" tabindex="-1" role="dialog" style="display: block" [style.display]="showModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">{{title}}</span>
+        <i class="icon-cancel fr" data-dismiss="modal" aria-label="Close" (click)="cancelAction()"></i>
+        <p *ngIf="subTitle">{{subTitle}}</p>
+      </div>
+      <div class="modal-body">
+        <ng-content></ng-content>
+        <mat-horizontal-stepper [linear]="false" #stepper="matHorizontalStepper">
+          <mat-step [stepControl]="firstFormGroup">
+            <form [formGroup]="firstFormGroup">
+              <ng-template matStepLabel>Upload a file</ng-template>
+              <div class="form-group">
+                <label for="uploadF">
+                  Upload a file
+                </label>
+                <input id="uploadF" type="file" (change)="uploadData($event)">
+              </div>
+              <div class="form-group">
+                <label for="firstCheck" class="form-check-label">I agree with the information above</label>
+                <input class="form-check-input" id="firstCheck" type="checkbox" formControlName="firstCtrl" required>
+              </div>
+                <div class="jumbotron">
+                  <p>The file you need to import must have a xls extension</p>
+                  <p>It's content should have the following format:</p>
+                  <table class="table-bordered table table-stripped">
+                    <thead class="thead-dark">
+                    <tr>
+                      <th scope="col">code</th>
+                      <th scope="col">units</th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-success">
+                    <tr>
+                      <td>324439</td>
+                      <td>50</td>
+                    </tr>
+                    <tr>
+                      <td>928323</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td>827421</td>
+                      <td>37</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-warning"  aria-label="Close" (click)="this.hide()">
+                  Cancel
+                </button>
+                <button type="button" class="btn btn-success" matStepperNext (click)="uploadStock()">
+                  Next
+                </button>
+              </div>
+            </form>
+          </mat-step>
+          <mat-step [stepControl]="secondFormGroup">
+            <form [formGroup]="secondFormGroup">
+              <ng-template matStepLabel>Check file's info</ng-template>
+              <div class="form-group">
+                <ul class="list-group">
+                  <li class="list-group-item" *ngFor="let item of uploadedProducts">
+                    <p *ngIf="item.product !== null">Product: {{item.product.name}} - Code: {{item.code}} - Units: {{item.units}}</p>
+                    <p *ngIf="item.product === null">Code: {{item.code}} <b color="red"> Product not found!</b></p>
+                  </li>
+                </ul>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-warning" matStepperPrevious>Back</button>
+                <button type="button" class="btn btn-success" matStepperNext (click)="validateProducts()">Next</button>
+              </div>
+            </form>
+          </mat-step>
+          <mat-step>
+            <ng-template matStepLabel>Confirm Upload</ng-template>
+            <div class="card">
+              <div class="card-header">
+                File details
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">Excel content</h5>
+                <div class="form-group">
+                  <ul class="list-group">
+                    <li class="list-group-item" *ngFor="let item of validProducts">
+                      <p>Product: {{item.product.name}} - Code: {{item.code}} - Units: {{item.units}}</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-warning"  aria-label="Close" (click)="this.hide()">
+                Cancel
+              </button>
+              <button type="button" class="btn btn-success" (click)="sendUploadedProducts();this.hide();">
+                Finish
+              </button>
+            </div>
+          </mat-step>
+        </mat-horizontal-stepper>
+      </div>
+    </div>
+  </div>
+</div>

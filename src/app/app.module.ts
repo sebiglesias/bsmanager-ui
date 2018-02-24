@@ -62,6 +62,8 @@ import { ProductImportModalComponent } from './product-panel/product-import-moda
 import { Ng2FilterPipeModule } from 'ng2-filter-pipe';
 import { Ng2OrderModule } from 'ng2-order-pipe';
 import {NgxPaginationModule} from 'ngx-pagination';
+import { FileUploadModule } from 'ng2-file-upload';
+
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
@@ -137,7 +139,8 @@ const appRoutes: Routes = [
     MatExpansionModule,
     Ng2FilterPipeModule,
     Ng2OrderModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    FileUploadModule
 ],
   providers: [
     CategoryService,

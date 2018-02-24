@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
-import {Brand, Category, Product} from '../../models';
+import {Brand, Category, Product, StockXls} from '../../models';
 import {Subject} from 'rxjs/Subject';
 import {DataTableDirective} from 'angular-datatables';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
@@ -12,6 +12,7 @@ import {CategoryService} from '../../category-panel/category.service';
 import {ProductDetailModalComponent} from '../product-detail-modal/product-detail-modal.component';
 import {ProductStockModalComponent} from '../product-stock-modal/product-stock-modal.component';
 import {PageEvent} from '@angular/material';
+import {ProductImportModalComponent} from '../product-import-modal/product-import-modal.component';
 
 @Component({
   selector: 'app-product',
@@ -39,6 +40,7 @@ export class ProductComponent implements OnInit {
   @ViewChild('detailProductModal') detailModal: ProductDetailModalComponent;
   @ViewChild('deleteProductModal') deleteModal: ProductDeleteModalComponent;
   @ViewChild('createProductModal') createModal: ProductCreateModalComponent;
+  @ViewChild('importProductModal') importModal: ProductImportModalComponent;
   @ViewChild('stockProductModal') stockModal: ProductStockModalComponent;
   pageEvent: PageEvent;
   page = 1;
@@ -105,6 +107,10 @@ export class ProductComponent implements OnInit {
 
   createProductOpenModal() {
     this.createModal.show();
+  }
+
+  importProductOpenModal() {
+    this.importModal.show();
   }
 
   detailProductOpenModal(prod: Product) {
@@ -180,6 +186,20 @@ export class ProductComponent implements OnInit {
         () => console.log('completed CreatedProduct'));
   }
 
+
+  importProductAlert(p: StockXls) {
+    this.productService
+      .getAllProducts()
+      .subscribe(
+        products => {
+          this.products = products;
+          this.indivStock(p.product.name, p.units, true);
+          this.reFilter();
+        },
+        error => this.stockAddedToast(false),
+        () => console.log('completed CreatedProduct'));
+  }
+
   deleteToast(deleted: boolean) {
     console.log('entre a deletedToast');
     if (deleted) {
@@ -219,6 +239,14 @@ export class ProductComponent implements OnInit {
   stockAddedToast(added: boolean) {
     if (added) {
       this.toastr.success('Success!', 'The stock was added correctly.');
+    } else {
+      this.toastr.error('Couldn\'t add stock!', 'There is something wrong with your connection.');
+    }
+  }
+
+  indivStock(name: string, units: number, added: boolean) {
+    if (added) {
+      this.toastr.success(name + ' was added ' + units + ' units!', 'Success!');
     } else {
       this.toastr.error('Couldn\'t add stock!', 'There is something wrong with your connection.');
     }

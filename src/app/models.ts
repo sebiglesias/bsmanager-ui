@@ -78,3 +78,9 @@ export interface OrderDetail {
   quantity: number;
   price: number;
 }
+
+export interface StockXls {
+  code: number;
+  units: number;
+  product: Product;
+}
