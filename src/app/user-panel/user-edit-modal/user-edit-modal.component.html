@@ -3,13 +3,13 @@
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <span class="modal-title">{{title + " - Group: " + user.id + " " + user.name}}</span>
+        <span class="modal-title">{{title + " - User: " + user.id + " " + user.name}}</span>
         <i class="icon-cancel fr" data-dismiss="modal" aria-label="Close" (click)="cancelAction()"></i>
         <p *ngIf="subTitle">{{subTitle}}</p>
       </div>
       <div class="modal-body">
         <ng-content></ng-content>
-        <form [formGroup]="userForm" (ngSubmit)="this.createUser()">
+        <form [formGroup]="userForm" (ngSubmit)="this.editUser()">
           <div class="form-row">
             <div class="col">
               <div class="form-group">
@@ -28,24 +28,23 @@
                 >
               </div>
               <div class="form-group">
-                <label for="telephone">Telephone</label>
+                <label for="CUIT">Tax Payer Numer</label>
                 <input
-                  placeholder="Telephone number"
-                  id="telephone"
+                  placeholder="Choose a tax payer number"
+                  id="CUIT"
                   type="text"
                   class="form-control"
-                  data-length="20"
+                  data-length="50"
                   required
-                  name="telephone"
-                  [(ngModel)]="user.telephone"
-                  formControlName="telephone"
-                  value="user.telephone"
+                  name="CUIT"
+                  [(ngModel)]="user.CUIT"
+                  value="user.CUIT"
+                  formControlName="CUIT"
                 >
               </div>
               <div class="form-group">
                 <label for="address">Address</label>
                 <input
-                  placeholder="User's address"
                   id="address"
                   type="text"
                   class="form-control"
@@ -53,44 +52,72 @@
                   required
                   name="address"
                   [(ngModel)]="user.address"
-                  formControlName="address"
                   value="user.address"
+                  formControlName="address"
                 >
               </div>
+            </div>
+            <div class="col">
               <div class="form-group">
-                <label for="birthday">Birth date</label>
-                <input
+                <label for="birthday">Birthday</label>
+                <my-date-picker
                   id="birthday"
-                  type="text"
-                  class="form-control"
-                  data-length="20"
-                  required
-                  name="birthday"
                   [(ngModel)]="user.birthday"
-                  formControlName="birthday"
                   value="user.birthday"
+                  formControlName="birthday"
+                  options="myDatePickerOptions"
                 >
+                </my-date-picker>
               </div>
               <div class="form-group">
                 <label for="email">Email</label>
                 <input
-                  placeholder="User's email"
+                  placeholder="Choose a email"
                   id="email"
+                  type="text"
+                  class="form-control"
+                  data-length="50"
+                  required
+                  name="email"
+                  [(ngModel)]="user.email"
+                  value="user.email"
+                  formControlName="email"
+                >
+              </div>
+              <div class="form-group">
+                <label for="telephone">Telephone</label>
+                <input
+                  id="telephone"
                   type="text"
                   class="form-control"
                   data-length="20"
                   required
-                  name="email"
-                  [(ngModel)]="user.email"
-                  formControlName="email"
-                  value="user.email"
+                  name="telephone"
+                  [(ngModel)]="user.telephone"
+                  value="user.telephone"
+                  formControlName="telephone"
                 >
               </div>
             </div>
           </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="admin">Is it an admin?</label>
+              <input
+                id="admin"
+                type="checkbox"
+                class="form-control"
+                required
+                name="admin"
+                [(ngModel)]="user.admin"
+                value="user.admin"
+                formControlName="admin"
+              >
+            </div>
+          </div>
           <div class="modal-footer">
             <div class="popup-footer">
-              <button class="btn btn-primary"  aria-label="Close" (click)="this.hide()">
+              <button type="button" class="btn btn-primary"  aria-label="Close" (click)="this.hide()">
                 Cancel
               </button>
               <button type="submit" class="btn btn-success" aria-label="Close" (click)="this.hide()">

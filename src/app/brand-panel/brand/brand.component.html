@@ -1,0 +1,41 @@
+<script src="brand.component.ts"></script>
+<div class="container">
+  <h3 class="element">Brand Management Panel</h3>
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-success myButton" (click)="createBrandOpenModal()">
+    Create a new brand
+  </button>
+
+  <!-- Create Modal -->
+  <app-brand-create-modal #createBrandModal id="createBrand" [showModal]="isCreateModalOpen" [title]="'Create Brand'" (createdBrandAlert)="createdBrandAlert($event)"></app-brand-create-modal>
+  <!-- Edit modal -->
+  <app-brand-edit-modal #editBrandModal id="editBrand" [showModal]="isEditModalOpen" [title]="'Edit Brand'" (updatedBrandAlert)="updatedBrandAlert($event)"></app-brand-edit-modal>
+  <!-- Delete Modal -->
+  <app-brand-delete-modal #deleteBrandModal id="deleteBrand" [showModal]="isDeleteModalOpen" [title]="'Delete Brand'" (deletedBrandAlert)="deletedBrandAlert($event)"></app-brand-delete-modal>
+
+  <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>InfoUrl</th>
+      <th>Observations</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let brand of brands">
+      <td>{{brand.id}}</td>
+      <td>{{brand.name}}</td>
+      <td>{{brand.infoURL}}</td>
+      <td>{{brand.observations}}</td>
+      <td>
+        <div class="btn-group">
+          <button type="button" class="btn btn-default btn" (click)="editRowOpenModal(brand)"><i class="material-icons">edit</i></button>
+          <button type="button" class="btn btn-default btn" (click)="deleteRowOpenModal(brand)"><i class="material-icons">delete</i></button>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

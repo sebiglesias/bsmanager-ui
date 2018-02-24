@@ -8,9 +8,6 @@
       <li class="nav-item">
         <a class="nav-link" href="/profile">Profile</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/stock">Inventory</a>
-      </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sales</a>
         <div class="dropdown-menu" aria-labelledby="dropdown01">
@@ -19,15 +16,20 @@
         </div>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Panels</a>
+        <a class="nav-link dropdown-toggle" href="" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Management panels</a>
         <div class="dropdown-menu" aria-labelledby="dropdown02">
-          <a class="dropdown-item" href="/groups">Groups</a>
-          <a class="dropdown-item" href="/stores">Stores</a>
           <a class="dropdown-item" href="/categories">Categories</a>
           <a class="dropdown-item" href="/brands">Brands</a>
+          <a class="dropdown-item" href="/measures">Measure types</a>
           <a class="dropdown-item" href="/users">Users</a>
           <a class="dropdown-item" href="/products">Products</a>
         </div>
+      </li>
+      <li *ngIf="!authService.getCurrentUser()" class="nav-item">
+        <a class="nav-link" href="/login">Login</a>
+      </li>
+      <li *ngIf="authService.getCurrentUser()" class="nav-item">
+        <a class="nav-link" href="/" (click)="authService.logout()">Logout</a>
       </li>
     </ul>
   </div>

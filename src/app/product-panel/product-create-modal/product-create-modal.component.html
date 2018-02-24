@@ -1,0 +1,217 @@
+<div class="modal-backdrop fade in" [style.display]="showModal ? 'block' : 'none'"></div>
+<div class="modal" tabindex="-1" role="dialog" style="display: block" [style.display]="showModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">{{title}}</span>
+        <i class="icon-cancel fr" data-dismiss="modal" aria-label="Close" (click)="cancelAction()"></i>
+        <p *ngIf="subTitle">{{subTitle}}</p>
+      </div>
+      <div class="modal-body">
+        <ng-content></ng-content>
+        <form [formGroup]="productForm" (ngSubmit)="this.createProduct()">
+          <div class="form-row">
+            <div class="col">
+              <div class="form-group">
+                <label for="name">Product name</label>
+                <input
+                  placeholder="Choose a product name"
+                  id="name"
+                  type="text"
+                  class="form-control"
+                  data-length="20"
+                  required
+                  name="name"
+                  [(ngModel)]="product.name"
+                  formControlName="name"
+                >
+              </div>
+              <div class="form-group">
+                <label for="code">Product code</label>
+                <input
+                  placeholder="Choose a product code"
+                  id="code"
+                  type="text"
+                  class="form-control"
+                  data-length="20"
+                  required
+                  name="code"
+                  [(ngModel)]="product.code"
+                  formControlName="code"
+                >
+              </div>
+              <div class="form-group">
+                <label for="model">Product model</label>
+                <input
+                  placeholder="Choose a product model"
+                  id="model"
+                  type="text"
+                  class="form-control"
+                  data-length="20"
+                  required
+                  name="model"
+                  [(ngModel)]="product.model"
+                  formControlName="model"
+                >
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group">
+                <label for="series">Product Series</label>
+                <input
+                  placeholder="Choose a product series"
+                  id="series"
+                  type="text"
+                  class="form-control"
+                  data-length="20"
+                  required
+                  name="series"
+                  [(ngModel)]="product.series"
+                  formControlName="series"
+                >
+              </div>
+              <div class="form-group">
+                <label for="brand">Brand</label>
+                <select id="brand" class="form-control" [(ngModel)]="product.brand" formControlName="brand">
+                  <option *ngFor="let brand of brands"
+                          [value]="brand">
+                    {{brand.name}}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="measure">Unit of measure</label>
+                <select id="measure" class="form-control" [(ngModel)]="product.measure" formControlName="measure">
+                  <option *ngFor="let measure of measures"
+                          [value]="measure">
+                    {{measure.name}}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col">
+              <div class="form-group">
+                <label for="costBeforeTax">Cost Before Tax</label>
+                <input
+                  placeholder="Cost Before tax"
+                  id="costBeforeTax"
+                  type="number"
+                  class="form-control"
+                  data-length="20"
+                  required
+                  name="costBeforeTax"
+                  [(ngModel)]="product.costBeforeTax"
+                  formControlName="costBeforeTax"
+                >
+              </div>
+              <div class="form-group">
+                <label for="costAfterTax">Cost After Tax</label>
+                <input
+                  placeholder="Cost after tax"
+                  id="costAfterTax"
+                  type="number"
+                  class="form-control"
+                  data-length="20"
+                  required
+                  name="costAfterTax"
+                  [(ngModel)]="product.costAfterTax"
+                  formControlName="costAfterTax"
+                >
+              </div>
+              <div class="form-group">
+                <label for="infoUrl">Information link</label>
+                <input
+                  placeholder="Link with product info"
+                  id="infoUrl"
+                  type="text"
+                  class="form-control"
+                  data-length="20"
+                  required
+                  name="infoUrl"
+                  [(ngModel)]="product.infoUrl"
+                  formControlName="infoUrl"
+                >
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group">
+                <label for="longDescription">Long product description</label>
+                <textarea
+                  placeholder="A long product description..."
+                  id="longDescription"
+                  type="text"
+                  class="form-control"
+                  data-length="100"
+                  required
+                  name="longDescription"
+                  [(ngModel)]="product.longDescription"
+                  formControlName="longDescription"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label for="shortDescription">Short product description</label>
+                <textarea
+                  placeholder="A short product description..."
+                  id="shortDescription"
+                  type="text"
+                  class="form-control"
+                  data-length="100"
+                  required
+                  name="shortDescription"
+                  [(ngModel)]="product.shortDescription"
+                  formControlName="shortDescription"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label for="quantity">Product initial quantity</label>
+                <input
+                  placeholder="Initial quantity, can be 0"
+                  id="quantity"
+                  type="number"
+                  class="form-control"
+                  data-length="100"
+                  required
+                  name="quantity"
+                  [(ngModel)]="product.quantity"
+                  formControlName="quantity"
+                >
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col">
+              <div class="form-group">
+                <label for="categories">Categories</label>
+                <select id="categories" class="form-control" required name="categories" (change)="addCategory($event.target.value)">
+                  <option *ngFor="let category of categories"
+                          [value]="category.id">
+                    {{category.id}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col">
+              <ul class="list-group">
+                <li class="list-group-item" *ngFor="let cat of selectedCategories">
+                  {{cat.singular_name}}<button type="button" class="btn btn-outline-danger" (click)="removeCategory(cat.id)"></button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="popup-footer">
+              <button type="button" class="btn btn-primary"  aria-label="Close" (click)="this.hide()">
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-success" aria-label="Close" (click)="this.hide()">
+                Create
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

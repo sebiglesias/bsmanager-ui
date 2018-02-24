@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
-import {Group, Store, User} from '../models';
+import {User} from '../models';
 
 const userUrl = environment.baseUrl + '/user';
 
@@ -18,11 +18,9 @@ export class UserService {
       .get<User[]>(userUrl);
   }
 
-  public createUser(u: User): Observable<User> {
-    let headers = new HttpHeaders();
-    headers = headers.set('Content-type', 'application/json; charset=utf-8');
+  public createUser(g: User): Observable<User> {
     return this.http
-      .post<User>(userUrl, u);
+      .post<User>(userUrl, g);
   }
 
   public getUserByName(userId: number): Observable<User> {
@@ -31,9 +29,9 @@ export class UserService {
       .catch(this.handleError);
   }
 
-  public updateUser(u: User): Observable<User> {
+  public updateUser(g: User): Observable<User> {
     return this.http
-      .put(userUrl, u)
+      .put(userUrl, g)
       .catch(this.handleError);
   }
 
@@ -46,5 +44,11 @@ export class UserService {
   private handleError (error: Response | any) {
     console.error('UserService::handleError', error);
     return Observable.throw(error);
+  }
+
+  getUserById(id: number): Observable<User> {
+    return this.http
+      .get(userUrl + '/' + id)
+      .catch(this.handleError);
   }
 }

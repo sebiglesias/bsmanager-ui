@@ -6,42 +6,40 @@
   </button>
 
   <!-- Create Modal -->
-  <app-user-create-modal #createUserModal id="createUser" [showModal]="isCreateModalOpen" [title]="'Create user'" (createdUserAlert)="createdUserAlert($event)"></app-user-create-modal>
+  <app-user-create-modal #createUserModal id="createUser" [showModal]="isCreateModalOpen" [title]="'Create User'" (createdUserAlert)="createdUserAlert($event)"></app-user-create-modal>
   <!-- Edit modal -->
-  <app-user-edit-modal #editUserModal id="editUser" [showModal]="isEditModalOpen" [title]="'Edit user'" (updatedUserAlert)="updatedUserAlert($event)"></app-user-edit-modal>
+  <app-user-edit-modal #editUserModal id="editUser" [showModal]="isEditModalOpen" [title]="'Edit User'" (updatedUserAlert)="updatedUserAlert($event)"></app-user-edit-modal>
   <!-- Delete Modal -->
-  <app-user-delete-modal #deleteUserModal id="deleteUser" [showModal]="isDeleteModalOpen" [title]="'Delete user'" (deletedUserAlert)="deletedUserAlert($event)"></app-user-delete-modal>
+  <app-user-delete-modal #deleteUserModal id="deleteUser" [showModal]="isDeleteModalOpen" [title]="'Delete User'" (deletedUserAlert)="deletedUserAlert($event)"></app-user-delete-modal>
 
   <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
     <thead>
     <tr>
       <th>ID</th>
       <th>Name</th>
-      <th>CUIT</th>
+      <th>Tax payer #</th>
       <th>Address</th>
-      <th>Telephone</th>
       <th>Birthday</th>
       <th>Email</th>
-      <th>Groups</th>
-      <th>Stores</th>
+      <th>Telephone</th>
+      <th>Admin</th>
       <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let user of users">
-      <td>{{ user.id }}</td>
-      <td>{{ user.name }}</td>
-      <td>{{ user.cuit }}</td>
-      <td>{{ user.address }}</td>
-      <td>{{ user.telephone }}</td>
-      <td>{{ user.birthday }}</td>
-      <td>{{ user.email }}</td>
-      <td>{{this.getGroupString(user)}}</td>
-      <td>{{this.getStoreString(user)}}</td>
+      <td>{{user.id}}</td>
+      <td>{{user.name}}</td>
+      <td>{{user.CUIT}}</td>
+      <td>{{user.address}}</td>
+      <td>{{user.birthday}}</td>
+      <td>{{user.email}}</td>
+      <td>{{user.telephone}}</td>
+      <td>{{user.admin}}</td>
       <td>
         <div class="btn-group">
-          <button type="button" class="btn btn-default btn" (click)="editRowOpenModal(group)"><i class="material-icons">edit</i></button>
-          <button type="button" class="btn btn-default btn" (click)="deleteRowOpenModal(group)"><i class="material-icons">delete</i></button>
+          <button type="button" class="btn btn-default btn" (click)="editRowOpenModal(user)"><i class="material-icons">edit</i></button>
+          <button type="button" class="btn btn-default btn" (click)="deleteRowOpenModal(user)"><i class="material-icons">delete</i></button>
         </div>
       </td>
     </tr>

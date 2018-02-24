@@ -1,0 +1,108 @@
+<script src="product.component.ts"></script>
+<div class="container">
+  <h3 class="element">Product Management Panel</h3>
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-success myButton" (click)="createProductOpenModal()">
+    Create a new product
+  </button>
+  <button type="button" class="btn btn-success myButton" href="/uploadStock">
+    Import stock from file
+  </button>
+
+  <!-- Create Modal -->
+  <app-product-create-modal #createProductModal id="createProduct" [showModal]="isCreateModalOpen" [title]="'Create Product'" (createdProductAlert)="createdProductAlert($event)"></app-product-create-modal>
+  <!-- Edit modal -->
+  <app-product-edit-modal #editProductModal id="editProduct" [showModal]="isEditModalOpen" [title]="'Edit Product'" (updatedProductAlert)="updatedProductAlert($event)"></app-product-edit-modal>
+  <!-- Delete Modal -->
+  <app-product-delete-modal #deleteProductModal id="deleteProduct" [showModal]="isDeleteModalOpen" [title]="'Delete Product'" (deletedProductAlert)="deletedProductAlert($event)"></app-product-delete-modal>
+  <!-- Detail Modal -->
+  <app-product-detail-modal #detailProductModal id="detailProduct" [showModal]="isDetailModalOpen" [title]="'Product Info'" (detailProductAlert)="detailProductAlert($event)"></app-product-detail-modal>
+  <!-- Add Stock Modal -->
+  <app-product-stock-modal #stockProductModal id="stockProduct" [showModal]="isStockModalOpen" [title]="'Product Stock'" (stockProductAlert)="stockProductAlert($event)"></app-product-stock-modal>
+
+  <div class="row card myCard">
+    <div class="card-header">
+      <h4 class="card-title product">Filter by</h4>
+        <div class="btn-group my-group" role="group">
+          <button class="btn btn-outline-secondary" (click)="setList(true)"><i class="material-icons">view_headline</i></button>
+          <button class="btn btn-outline-secondary" (click)="setList(false)"><i class="material-icons">view_comfy</i></button>
+        </div>
+    </div>
+    <div class="card-body">
+      <form>
+        <div class="form-row">
+          <div class="col">
+            <div class="form-group">
+              <label for="brand">Brand</label>
+              <select class="form-control" id="brand">
+                <option *ngFor="let brand of brands">{{brand.name}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="category">Category</label>
+              <select class="form-control" id="category">
+                <option *ngFor="let cat of categories">{{cat.plural_name}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="search">Search</label>
+              <input class="form-control" id="search">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="catalogue">
+    <ul class="list-group" *ngIf="list">
+      <li class="list-group-item" *ngFor="let prod of products">
+        <ul class="product list-inline">
+          <li class="list-inline-item">{{prod.name}}</li>
+          <li class="list-inline-item">Code: {{prod.code}}</li>
+          <li class="list-inline-item">Price: {{prod.costAfterTax}}</li>
+          <li class="list-inline-item">Quantity: {{prod.quantity}}</li>
+        </ul>
+        <div class="btn-group my-group" role="group" aria-label="Product actions">
+          <button type="button" class="btn btn-outline-secondary" (click)="stockProductOpenModal(prod)"><i class="material-icons">add_circle</i></button>
+          <button type="button" class="btn btn-outline-secondary" (click)="editRowOpenModal(prod)"><i class="material-icons">edit</i></button>
+          <button type="button" class="btn btn-outline-secondary" (click)="deleteRowOpenModal(prod)"><i class="material-icons">delete</i></button>
+          <button type="button" class="btn btn-outline-secondary" (click)="detailProductOpenModal(prod)"><i class="material-icons">more</i></button>
+        </div>
+      </li>
+    </ul>
+    <mat-grid-list cols="4" rowHeight="130px" *ngIf="!list">
+      <mat-grid-tile
+        *ngFor="let prod of products"
+        [colspan]="1"
+        [rowspan]="1"
+        [style.background]="'white'">
+        <mat-grid-tile-header class="">
+          {{prod.name}}
+        </mat-grid-tile-header>
+        <div class="">
+          <ul class="product list-inline">
+            <li class="list-inline-item">Code: {{prod.code}}</li>
+            <li class="list-inline-item">Price: {{prod.costAfterTax}}</li>
+            <li class="list-inline-item">Quantity: {{prod.quantity}}</li>
+          </ul>
+        </div>
+        <mat-grid-tile-footer>
+          <div class="btn-group" align="center">
+            <button type="button" class="btn btn-secondary" (click)="editRowOpenModal(prod)"><i class="material-icons">edit</i></button>
+            <button type="button" class="btn btn-secondary" (click)="deleteRowOpenModal(prod)"><i class="material-icons">delete</i></button>
+            <button type="button" class="btn btn-outline-secondary" (click)="detailProductOpenModal(prod)"><i class="material-icons">more</i></button>
+          </div>
+        </mat-grid-tile-footer>
+      </mat-grid-tile>
+    </mat-grid-list>
+    <mat-paginator [length]="filteredProducts.length"
+                   [pageSize]=""
+                   [pageSizeOptions]="[5, 10, 25, 50, 100]"
+                   (page)="pageEvent = $event">
+    </mat-paginator>
+  </div>
+</div>

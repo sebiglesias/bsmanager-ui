@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { User} from '../../models';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {User} from '../../models';
 import {UserService} from '../user.service';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-user-edit-modal',
@@ -17,17 +17,17 @@ export class UserEditModalComponent implements OnInit {
   @Input('positiveLabel') positiveLabel: string;
 
   user: User = {
-    name: '',
     password: '',
-    cuit: '',
+    name: '',
+    CUIT: '',
     address: '',
     birthday: new Date(),
     email: '',
     telephone: '',
-    groups: [],
-    stores: []
+    admin: false
   };
   userForm;
+  users: User[] = [];
 
   @Output() updatedUserAlert = new EventEmitter<boolean>();
 
@@ -38,13 +38,12 @@ export class UserEditModalComponent implements OnInit {
   constructor(private userService: UserService) {
     this.userForm = new FormGroup({
       name: new FormControl(null, [Validators.required]),
-      cuit: new FormControl(null, [Validators.required]),
+      CUIT: new FormControl(null, [Validators.required]),
       address: new FormControl(null, [Validators.required]),
       birthday: new FormControl(null, [Validators.required]),
       email: new FormControl(null, [Validators.required]),
       telephone: new FormControl(null, [Validators.required]),
-      groups: new FormControl(null, [Validators.required]),
-      stores: new FormControl(null, [Validators.required])
+      admin: new FormControl(null, [Validators.required])
     });
   }
 
@@ -76,8 +75,8 @@ export class UserEditModalComponent implements OnInit {
     return false;
   }
 
-  setUser(u: User) {
-    this.user = u;
+  setUser(g: User) {
+    this.user = g;
   }
 
   editUser() {

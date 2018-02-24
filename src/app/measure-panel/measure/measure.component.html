@@ -1,0 +1,38 @@
+<div class="container">
+  <h3 class="element">Measure Management Panel</h3>
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-success myButton" (click)="createMeasureOpenModal()">
+    Create a new measure
+  </button>
+
+  <!-- Create Modal -->
+  <app-measure-create-modal #createMeasureModal id="createMeasure" [showModal]="isCreateModalOpen" [title]="'Create measure'" (createdMeasureAlert)="createdMeasureAlert($event)"></app-measure-create-modal>
+  <!-- Edit modal -->
+  <app-measure-edit-modal #editMeasureModal id="editMeasure" [showModal]="isEditModalOpen" [title]="'Edit measure'" (updatedMeasureAlert)="updatedMeasureAlert($event)"></app-measure-edit-modal>
+  <!-- Delete Modal -->
+  <app-measure-delete-modal #deleteMeasureModal id="deleteMeasure" [showModal]="isDeleteModalOpen" [title]="'Delete Measure'" (deletedMeasureAlert)="deletedMeasureAlert($event)"></app-measure-delete-modal>
+
+  <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Abbreviation</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let measure of measures">
+      <td>{{ measure.id }}</td>
+      <td>{{ measure.name}}</td>
+      <td>{{ measure.abbreviation}}</td>
+      <td>
+        <div class="btn-group">
+          <button type="button" class="btn btn-default btn" (click)="editRowOpenModal(measure)"><i class="material-icons">edit</i></button>
+          <button type="button" class="btn btn-default btn" (click)="deleteRowOpenModal(measure)"><i class="material-icons">delete</i></button>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

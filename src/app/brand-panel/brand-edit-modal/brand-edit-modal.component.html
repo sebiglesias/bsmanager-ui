@@ -1,0 +1,71 @@
+<div class="modal-backdrop fade in" [style.display]="showModal ? 'block' : 'none'"></div>
+<div class="modal" tabindex="-1" role="dialog" style="display: block" [style.display]="showModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">{{title + " - Brand: " + brand.id + " " + brand.name}}</span>
+        <i class="icon-cancel fr" data-dismiss="modal" aria-label="Close" (click)="cancelAction()"></i>
+        <p *ngIf="subTitle">{{subTitle}}</p>
+      </div>
+      <div class="modal-body">
+        <ng-content></ng-content>
+        <form [formGroup]="brandForm" (ngSubmit)="this.editBrand()">
+          <div class="form-group">
+            <label for="name">Brand name</label>
+            <input
+              placeholder="Choose a brand name"
+              id="name"
+              type="text"
+              class="form-control"
+              data-length="20"
+              required
+              name="name"
+              [(ngModel)]="brand.name"
+              formControlName="name"
+              value="brand.name"
+            >
+          </div>
+          <div class="form-group">
+            <label for="infoURL">Info URL</label>
+            <input
+              placeholder="Choose a info url"
+              id="infoURL"
+              type="text"
+              class="form-control"
+              data-length="50"
+              required
+              name="infoURL"
+              [(ngModel)]="brand.infoURL"
+              formControlName="infoURL"
+              value="brand.infoURL"
+            >
+          </div>
+          <div class="form-group">
+            <label for="observations">Observations</label>
+            <input
+              id="observations"
+              type="text"
+              class="form-control"
+              data-length="20"
+              required
+              name="observations"
+              [(ngModel)]="brand.observations"
+              formControlName="observations"
+              value="brand.observations"
+            >
+          </div>
+          <div class="modal-footer">
+            <div class="popup-footer">
+              <button type="button" class="btn btn-primary"  aria-label="Close" (click)="this.hide()">
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-success" aria-label="Close" (click)="this.hide()">
+                Update
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

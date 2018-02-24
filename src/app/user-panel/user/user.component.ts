@@ -3,10 +3,10 @@ import {User} from '../../models';
 import {Subject} from 'rxjs/Subject';
 import {DataTableDirective} from 'angular-datatables';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import {UserService} from '../user.service';
 import {UserCreateModalComponent} from '../user-create-modal/user-create-modal.component';
 import {UserDeleteModalComponent} from '../user-delete-modal/user-delete-modal.component';
 import {UserEditModalComponent} from '../user-edit-modal/user-edit-modal.component';
-import {UserService} from '../user.service';
 
 @Component({
   selector: 'app-user',
@@ -34,7 +34,7 @@ export class UserComponent implements OnInit {
     this.getUsers();
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 2
+      pageLength: 5
     };
   }
 
@@ -47,13 +47,13 @@ export class UserComponent implements OnInit {
       });
   }
 
-  editRowOpenModal(user: User) {
-    this.editModal.setUser(user);
+  editRowOpenModal(group: User) {
+    this.editModal.setUser(group);
     this.editModal.show();
   }
 
-  deleteRowOpenModal(user: User) {
-    this.deleteModal.setUser(user);
+  deleteRowOpenModal(group: User) {
+    this.deleteModal.setUser(group);
     this.deleteModal.show();
   }
 
@@ -154,21 +154,5 @@ export class UserComponent implements OnInit {
     } else {
       this.toastr.error('Couldn\'t created user!', 'There is something wrong with your connection.');
     }
-  }
-
-  getGroupString(user: User): string {
-    let finalString = '';
-    if (user.groups !== undefined && user.groups !== null) {
-      user.groups.forEach(group => finalString = finalString + '| ' + group.name);
-    }
-    return finalString;
-  }
-
-  getStoreString(user: User): string {
-    let finalString = '';
-    if (user.stores !== undefined && user.stores !== null) {
-      user.stores.forEach(store => finalString = finalString + '| ' + store.name);
-    }
-    return finalString;
   }
 }

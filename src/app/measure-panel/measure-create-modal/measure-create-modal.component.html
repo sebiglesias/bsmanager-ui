@@ -1,0 +1,55 @@
+<div class="modal-backdrop fade in" [style.display]="showModal ? 'block' : 'none'"></div>
+<div class="modal" tabindex="-1" role="dialog" style="display: block" [style.display]="showModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">{{title}}</span>
+        <i class="icon-cancel fr" data-dismiss="modal" aria-label="Close" (click)="cancelAction()"></i>
+        <p *ngIf="subTitle">{{subTitle}}</p>
+      </div>
+      <div class="modal-body">
+        <ng-content></ng-content>
+        <form [formGroup]="measureForm" (ngSubmit)="this.createMeasure()">
+          <div class="form-group">
+            <label for="name">Measure name</label>
+            <input
+              placeholder="Choose a measure name"
+              id="name"
+              type="text"
+              class="form-control"
+              data-length="20"
+              required
+              name="name"
+              [(ngModel)]="measure.name"
+              formControlName="name"
+            >
+          </div>
+          <div class="form-group">
+            <label for="abbreviation">Measure abbreviation</label>
+            <input
+              placeholder="Choose a abbreviation name"
+              id="abbreviation"
+              type="text"
+              class="form-control"
+              data-length="20"
+              required
+              name="abbreviation"
+              [(ngModel)]="measure.abbreviation"
+              formControlName="abbreviation"
+            >
+          </div>
+          <div class="modal-footer">
+            <div class="popup-footer">
+              <button type="button" class="btn btn-primary"  aria-label="Close" (click)="this.hide()">
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-success" aria-label="Close" (click)="this.hide()">
+                Create
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

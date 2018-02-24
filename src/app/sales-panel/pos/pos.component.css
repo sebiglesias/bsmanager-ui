@@ -15,9 +15,9 @@
   border: solid 0.5px black;
 }
 
-.buttons {
-
+.my-buttons {
+ float: right;
 }
-.result {
-
+.my-title {
+  float: left;
 }

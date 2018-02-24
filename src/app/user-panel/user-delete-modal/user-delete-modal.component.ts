@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import {User} from '../../models';
 import {UserService} from '../user.service';
 
+
 @Component({
   selector: 'app-user-delete-modal',
   templateUrl: './user-delete-modal.component.html',
@@ -19,7 +20,7 @@ export class UserDeleteModalComponent implements OnInit {
   @Output() deletedUserAlert = new EventEmitter<boolean>();
 
   @Output('closed') closeEmitter: EventEmitter < ModalResult > = new EventEmitter < ModalResult > ();
-  @Output('loaded') loadedEmitter: EventEmitter < UserDeleteModalComponent > = new EventEmitter < UserDeleteModalComponent> ();
+  @Output('loaded') loadedEmitter: EventEmitter < UserDeleteModalComponent > = new EventEmitter < UserDeleteModalComponent > ();
   @Output() positiveLabelAction = new EventEmitter();
 
   constructor(private userService: UserService) {}
@@ -52,8 +53,8 @@ export class UserDeleteModalComponent implements OnInit {
     return false;
   }
 
-  setUser(u: User) {
-    this.user = u;
+  setUser(g: User) {
+    this.user = g;
   }
 
   deleteUser(id: number) {

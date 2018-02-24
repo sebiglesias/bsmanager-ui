@@ -1,44 +1,95 @@
 <div class="container">
+  <!-- Detail Modal -->
+  <app-product-detail-modal #detailProductModal id="detailProduct" [showModal]="isDetailModalOpen" [title]="'Product Info'" (detailProductAlert)="detailProductAlert($event)"></app-product-detail-modal>
+  <!-- Checkout Modal -->
+  <app-sales-checkout-modal #checkoutSalesModal id="checkoutSale" [showModal]="isCheckoutModalOpen" [title]="'Checkout'" (checkoutSalesAlert)="checkoutSalesAlert($event)"></app-sales-checkout-modal>
 
   <div class="row row-offcanvas row-offcanvas-right">
 
     <div class="col-12 col-md-9">
-      <div class="jumbotron">
-        <h1>Hello, world!</h1>
-        <p>This is an example to show the potential of an offcanvas layout pattern in Bootstrap. Try some responsive-range viewport sizes to see it in action.</p>
+      <div class="row card myCard">
+        <div class="card-header">
+          <h4 class="card-title my-title">Filter by</h4>
+          <div class="btn-group my-buttons" role="group">
+            <button class="btn btn-outline-secondary" (click)="setList(true)"><i class="material-icons">view_headline</i></button>
+            <button class="btn btn-outline-secondary" (click)="setList(false)"><i class="material-icons">view_comfy</i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <form>
+            <div class="form-row">
+              <div class="col">
+                <div class="form-group">
+                  <label for="brand">Brand</label>
+                  <select class="form-control" id="brand">
+                    <option *ngFor="let brand of brands">{{brand.name}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group">
+                  <label for="category">Category</label>
+                  <select class="form-control" id="category">
+                    <option *ngFor="let cat of categories">{{cat.plural_name}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group">
+                  <label for="search">Search</label>
+                  <input class="form-control" id="search">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
-      <div class="row">
-        <div class="col-6 col-lg-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-        </div><!--/span-->
-        <div class="col-6 col-lg-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-        </div><!--/span-->
-        <div class="col-6 col-lg-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-        </div><!--/span-->
-        <div class="col-6 col-lg-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-        </div><!--/span-->
-        <div class="col-6 col-lg-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-        </div><!--/span-->
-        <div class="col-6 col-lg-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-        </div><!--/span-->
-      </div><!--/row-->
+      <br>
+      <div class="catalogue">
+        <ul class="list-group" *ngIf="list">
+          <li class="list-group-item" *ngFor="let prod of products">
+            <ul class="my-title list-inline">
+              <li class="list-inline-item">{{prod.name}}</li>
+              <li class="list-inline-item">Code: {{prod.code}}</li>
+              <li class="list-inline-item">Price: {{prod.costAfterTax}}</li>
+              <li class="list-inline-item">Quantity: {{prod.quantity}}</li>
+            </ul>
+            <div class="btn-group my-buttons" role="group" aria-label="Product actions">
+              <button type="button" class="btn btn-outline-secondary" (click)="detailProductOpenModal(prod)"><i class="material-icons">more</i></button>
+              <button type="button" class="btn btn-outline-secondary" [disabled]="prod.quantity === 0" (click)="addToCart(prod.id)"><i class="material-icons">add_shopping_cart</i></button>
+            </div>
+          </li>
+        </ul>
+        <mat-grid-list cols="4" rowHeight="130px" *ngIf="!list">
+          <mat-grid-tile
+            *ngFor="let prod of products"
+            [colspan]="1"
+            [rowspan]="1"
+            [style.background]="'white'">
+            <mat-grid-tile-header class="">
+              {{prod.name}}
+            </mat-grid-tile-header>
+            <div class="">
+              <ul class="product list-inline">
+                <li class="list-inline-item">Code: {{prod.code}}</li>
+                <li class="list-inline-item">Price: {{prod.costAfterTax}}</li>
+                <li class="list-inline-item">Quantity: {{prod.quantity}}</li>
+              </ul>
+            </div>
+            <mat-grid-tile-footer>
+              <div class="btn-group" align="center">
+                <button type="button" class="btn btn-outline-secondary" (click)="detailProductOpenModal(prod)"><i class="material-icons">more</i></button>
+                <button type="button" class="btn btn-outline-secondary" [disabled]="prod.quantity === 0" (click)="addToCart(prod.id)"><i class="material-icons">add_shopping_cart</i></button>
+              </div>
+            </mat-grid-tile-footer>
+          </mat-grid-tile>
+        </mat-grid-list>
+        <mat-paginator [length]="filteredProducts.length"
+                       [pageSize]=""
+                       [pageSizeOptions]="[5, 10, 25, 50, 100]"
+                       (page)="pageEvent = $event">
+        </mat-paginator>
+      </div>
     </div><!--/span-->
 
     <div class="col-6 col-md-3 sidebar-offcanvas" id="sidebar">
@@ -48,35 +99,22 @@
       <div class="card-body">
         <div class="card-text">
           <ul class="list-group">
-            <li class="list-group-item">Item xxxx
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-primary">-</button>
-                <button type="button" class="btn btn-outline-primary">+</button>
-                <button type="button" class="btn btn-outline-danger">x</button>
-              </div>
-            </li>
-            <li class="list-group-item">Item yyyy
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-primary">-</button>
-                <button type="button" class="btn btn-outline-primary">+</button>
-                <button type="button" class="btn btn-outline-danger">x</button>
+            <li class="list-group-item" *ngFor="let oDetail of orderDetails">{{oDetail.product.name}} - {{oDetail.quantity}}
+              <div class="btn-group my-buttons" role="group">
+                <button type="button" class="btn btn-outline-primary btn-sm" (click)="removeItem(oDetail.product, 1)"><i class="small material-icons">remove</i></button>
+                <button type="button" class="btn btn-outline-primary btn-sm" (click)="addItem(oDetail.product, 1)"><i class="small material-icons">add</i></button>
+                <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeFromCart(oDetail.product.id)"><i class="small material-icons">remove_shopping_cart</i></button>
               </div>
             </li>
           </ul>
           <p></p>
-          <p>Items</p>
-          <p>Total</p>
-          <button type="button" class="btn btn-success btn-lg btn-block">Go to Checkout</button>
-          <button type="button" class="btn btn-danger btn-lg btn-block">Cancel Order</button>
+          <p>Items: {{totalItems}}</p>
+          <p>Total: {{totalPrice}}</p>
+          <button type="button" class="btn btn-success btn-lg btn-block" [disabled]="totalItems === 0" (click)="openCheckout(this.order, this.orderDetails, this.totalItems, this.totalPrice)">Go to Checkout</button>
+          <button type="button" class="btn btn-danger btn-lg btn-block" (click)="cancelOrder()">Cancel Order</button>
         </div>
       </div>
     </div><!--/span-->
   </div><!--/row-->
-
-  <hr>
-
-  <footer>
-    <p>© Company 2017</p>
-  </footer>
 
 </div>

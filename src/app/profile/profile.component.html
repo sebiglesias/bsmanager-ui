@@ -1,112 +1,138 @@
 <div class="container">
-  <h4>Profile</h4>
-  <form [formGroup]="userForm" (ngSubmit)="this.createUser()">
-    <div class="form-row">
-      <div class="col">
-        <div class="form-group">
-          <label for="name">User name</label>
-          <input
-            placeholder="Choose a user name"
-            id="name"
-            type="text"
-            class="form-control"
-            data-length="20"
-            required
-            name="name"
-            [(ngModel)]="user.name"
-            formControlName="name"
-          >
-        </div>
-        <div class="form-group">
-          <label for="telephone">Telephone</label>
-          <input
-            placeholder="Telephone number"
-            id="telephone"
-            type="text"
-            class="form-control"
-            data-length="20"
-            required
-            name="telephone"
-            [(ngModel)]="user.telephone"
-            formControlName="telephone"
-          >
-        </div>
-        <div class="form-group">
-          <label for="address">Address</label>
-          <input
-            placeholder="User's address"
-            id="address"
-            type="text"
-            class="form-control"
-            data-length="20"
-            required
-            name="address"
-            [(ngModel)]="user.address"
-            formControlName="address"
-          >
-        </div>
-      </div>
-      <div class="col">
-        <div class="form-group">
-          <label for="birthday">Birth date</label>
-          <my-date-picker
-            name="birthday"
-            options="myDatePickerOptions"
-            [(ngModel)]="user.birthday"
-            required
-            id="birthday"
-            formControlName="birthday"
-          ></my-date-picker>
-        </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input
-            placeholder="User's email"
-            id="email"
-            type="text"
-            class="form-control"
-            data-length="20"
-            required
-            name="email"
-            [(ngModel)]="user.email"
-            formControlName="email"
-          >
-        </div>
-        <div class="form-group">
-          <label for="cuit">Tax paying number</label>
-          <input
-            placeholder="User's tax paying number"
-            id="cuit"
-            type="text"
-            class="form-control"
-            data-length="20"
-            required
-            name="cuit"
-            [(ngModel)]="user.cuit"
-            formControlName="cuit"
-          >
-        </div>
-      </div>
+  <div class="card">
+    <div class="card-header">
+      <h4 class="card-title">Profile</h4>
     </div>
-    <div class="form-row" *ngIf="groups.length !== 0">
-      <div class="col">
-        <label for="group-list">Your groups</label>
-        <ul id="group-list" class="list-group">
-          <li *ngFor="let group of myGroups" class="list-group-item">
-            {{group.id}} - {{group.name}}
-          </li>
-        </ul>
+    <form [formGroup]="userForm" (ngSubmit)="updateUser()">
+      <div class="card-body">
+        <div class="form-row">
+          <div class="col">
+            <div class="form-group">
+              <label for="name">User name</label>
+              <input
+                placeholder="Choose a user name"
+                id="name"
+                type="text"
+                class="form-control"
+                data-length="20"
+                required
+                name="name"
+                [(ngModel)]="user.name"
+                formControlName="name"
+                value="user.name"
+              >
+            </div>
+            <div class="form-group">
+              <label for="telephone">Telephone</label>
+              <input
+                placeholder="Telephone number"
+                id="telephone"
+                type="text"
+                class="form-control"
+                data-length="20"
+                required
+                name="telephone"
+                [(ngModel)]="user.telephone"
+                formControlName="telephone"
+                value="user.telephone"
+              >
+            </div>
+            <div class="form-group">
+              <label for="address">Address</label>
+              <input
+                placeholder="User's address"
+                id="address"
+                type="text"
+                class="form-control"
+                data-length="20"
+                required
+                name="address"
+                [(ngModel)]="user.address"
+                formControlName="address"
+                value="user.address"
+              >
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="birthday">Birth date</label>
+              <my-date-picker
+                name="birthday"
+                options="myDatePickerOptions"
+                [(ngModel)]="user.birthday"
+                required
+                id="birthday"
+                formControlName="birthday"
+                value="user.birthday"
+              ></my-date-picker>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                placeholder="User's email"
+                id="email"
+                type="text"
+                class="form-control"
+                data-length="20"
+                required
+                name="email"
+                [(ngModel)]="user.email"
+                formControlName="email"
+                value="user.email"
+              >
+            </div>
+            <div class="form-group">
+              <label for="CUIT">Tax paying number</label>
+              <input
+                placeholder="User's tax paying number"
+                id="CUIT"
+                type="text"
+                class="form-control"
+                data-length="20"
+                required
+                name="CUIT"
+                [(ngModel)]="user.CUIT"
+                formControlName="CUIT"
+                value="user.CUIT"
+              >
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col">
+            <h3>Change Password</h3>
+            <div class="form-group">
+              <label for="password">New Password</label>
+              <input
+                id="password"
+                type="password"
+                class="form-control"
+                data-length="20"
+                required
+                name="password"
+                formControlName="password"
+              >
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Re-enter New Password</label>
+              <input
+                id="confirmPassword"
+                type="password"
+                class="form-control"
+                data-length="20"
+                required
+                name="confirmPassword"
+                formControlName="confirmPassword"
+              >
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="form-row" *ngIf="stores.length !== 0">
-      <div class="col">
-        <label for="store-list">Your stores</label>
-        <ul id="store-list" class="list-group">
-          <li *ngFor="let store of myStores" class="list-group-item">
-            {{store.name}} - {{store.address}}
-          </li>
-        </ul>
+      <div class="card-footer">
+        <button type="submit" class="btn btn-success">
+          Update
+        </button>
       </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>

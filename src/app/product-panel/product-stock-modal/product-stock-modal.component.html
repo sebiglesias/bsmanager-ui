@@ -1,0 +1,37 @@
+<div class="modal-backdrop fade in" [style.display]="showModal ? 'block' : 'none'"></div>
+<div class="modal" tabindex="-1" role="dialog" style="display: block" [style.display]="showModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">{{title + " - Product: " + product.id + " " + product.name}}</span>
+        <i class="icon-cancel fr" data-dismiss="modal" aria-label="Close" (click)="cancelAction()"></i>
+        <p *ngIf="subTitle">{{subTitle}}</p>
+      </div>
+      <div class="modal-body">
+        <ng-content></ng-content>
+        <form [formGroup]="productForm" (ngSubmit)="this.addStock()">
+          <div class="form-row">
+            <p>The product {{product.name}} with code {{product.code}} has currently {{product.quantity}} {{product.measure.abbreviation}}</p>
+            <h1>How many more units do you want to add?</h1>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="stock">New units to add</label>
+              <input id="stock" type="number" class="form-control" formControlName="stock">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="popup-footer">
+              <button type="button" class="btn btn-primary"  aria-label="Close" (click)="this.hide()">
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-success" aria-label="Close" (click)="this.hide()">
+                Add stock
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

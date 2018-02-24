@@ -1,0 +1,34 @@
+<div class="modal-backdrop fade in" [style.display]="showModal ? 'block' : 'none'"></div>
+<div class="modal" tabindex="-1" role="dialog" style="display: block" [style.display]="showModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">{{product.name}} - {{product.code}}</span>
+        <i class="icon-cancel fr" data-dismiss="modal" aria-label="Close" (click)="cancelAction()"></i>
+        <p *ngIf="subTitle">{{subTitle}}</p>
+      </div>
+      <div class="modal-body">
+        <ng-content></ng-content>
+        <div role="main" class="container">
+          <p><b>Description</b>: {{product.longDescription}}</p>
+          <p><b>Short Description</b>: {{product.short}}</p>
+          <p><b>Model</b>: {{product.model}}</p>
+          <p><b>Series</b>: {{product.series}}</p>
+          <p><b>Brand</b>: {{product.brand.name}}</p>
+          <p><b>Categories</b>:</p>
+          <p *ngFor="let cat of product.categories">{{cat.plural_name}}</p>
+          <p><b>Quantity</b>: {{product.quantity}}</p>
+          <p><b>Measure</b>: {{product.measure.name}}</p>
+          <p><b>More info</b>: {{product.infoUrl}}</p>
+          <p><b>Cost before tax</b>: {{product.costBeforeTax}}</p>
+          <p><b>Cost after tax</b>: {{product.costAfterTax}}</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"  aria-label="Close" (click)="this.hide()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

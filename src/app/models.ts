@@ -1,63 +1,55 @@
-export interface Group {
-  id?: number;
-  name: string;
-  isEmployee: boolean;
-  stores: boolean;
-  groups: boolean;
-  products: boolean;
-  users: boolean;
-  brands: boolean;
-  categories: boolean;
-  units: boolean;
-}
 export interface User {
   id?: number;
   name: string;
   password: string;
-  cuit: string;
+  CUIT: string;
   address: string;
   birthday: Date;
   email: string;
   telephone: string;
-  groups: Group[];
-  stores: Store[];
+  admin: boolean;
 }
 
-export interface Store {
-  id?: number;
+export interface FormattedUser {
+  id: string;
   name: string;
+  CUIT: string;
   address: string;
+  birthday: string;
+  email: string;
+  telephone: string;
+  groups: string;
+  stores: string;
 }
 
 export interface Product {
   id?: number;
   code: string;
   name: string;
-  cost_after_tax: number;
-  cost_before_tax: number;
-  info_url: string;
-  long_description: string;
-  short_description: string;
+  costAfterTax: number;
+  costBeforeTax: number;
+  infoUrl: string;
+  longDescription: string;
+  shortDescription: string;
   model: string;
   series: string;
   brand: Brand;
-  category: Category;
-  unit: Unit;
+  categories: Category[];
+  measure: Measure;
+  quantity: number;
 }
 
 export interface IndividualProduct {
   id?: number;
   sale_price: number;
   product: Product;
-  store: Store;
 }
 
 export interface Brand {
   id?: number;
   name: string;
-  infourl: string;
+  infoURL: string;
   observations: string;
-  supplier: User;
 }
 
 export interface Category {
@@ -66,7 +58,23 @@ export interface Category {
   singular_name: string;
 }
 
-export interface Unit {
+export interface Measure {
   id?: number;
   name: string;
+  abbreviation: string;
+}
+
+export interface Order {
+  id?: number;
+  user: User;
+  date: Date;
+  price: number;
+}
+
+export interface OrderDetail {
+  id?: number;
+  order: Order;
+  product: Product;
+  quantity: number;
+  price: number;
 }
