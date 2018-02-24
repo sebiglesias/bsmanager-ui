@@ -34,7 +34,7 @@ export class UserComponent implements OnInit {
     this.getUsers();
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 5
+      pageLength: 10
     };
   }
 

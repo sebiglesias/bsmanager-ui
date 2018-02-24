@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
   user: User = {
     name: '',
     password: '',
-    CUIT: '',
+    taxNum: '',
     address: '',
     birthday: new Date(),
     email: '',

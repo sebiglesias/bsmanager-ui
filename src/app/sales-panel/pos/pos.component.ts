@@ -136,17 +136,21 @@ export class PosComponent implements OnInit {
           this.calculateResults();
           return orderD;
         }
+      } else {
+        return orderD;
       }
     }).filter( o => {
       return o !== undefined;
     });
   }
 
-  addItem(p: Product, n: number) {
+  addItem(p: Product) {
     this.orderDetails = this.orderDetails.map( orderD => {
       if (orderD.product.id === p.id) {
-        orderD.quantity = orderD.quantity + n;
+        orderD.quantity = orderD.quantity + 1;
         this.calculateResults();
+        return orderD;
+      } else {
         return orderD;
       }
     });

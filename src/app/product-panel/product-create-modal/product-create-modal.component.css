@@ -1,0 +1,10 @@
+.my-buttons{
+  float: right;
+}
+
+.my-paragraph {
+  float: left;
+}
+.my-list {
+  align-items: center;
+}

@@ -34,7 +34,7 @@ export class CategoryComponent implements OnInit {
     this.getCategories();
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 2
+      pageLength: 10
     };
   }
 

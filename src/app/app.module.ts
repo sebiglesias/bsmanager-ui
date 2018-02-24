@@ -57,7 +57,11 @@ import { ProductDetailModalComponent } from './product-panel/product-detail-moda
 import { ProductStockModalComponent } from './product-panel/product-stock-modal/product-stock-modal.component';
 import {MatStepperModule} from '@angular/material/stepper';
 import {SalesService} from './sales-panel/sales.service';
-
+import {MatExpansionModule} from '@angular/material/expansion';
+import { ProductImportModalComponent } from './product-panel/product-import-modal/product-import-modal.component';
+import { Ng2FilterPipeModule } from 'ng2-filter-pipe';
+import { Ng2OrderModule } from 'ng2-order-pipe';
+import {NgxPaginationModule} from 'ngx-pagination';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
@@ -107,6 +111,7 @@ const appRoutes: Routes = [
     ShowErrorComponent,
     ProductDetailModalComponent,
     ProductStockModalComponent,
+    ProductImportModalComponent,
   ],
   imports: [
     // MaterializeModule,
@@ -128,7 +133,11 @@ const appRoutes: Routes = [
     MyDatePickerModule,
     MatGridListModule,
     MatPaginatorModule,
-    MatStepperModule
+    MatStepperModule,
+    MatExpansionModule,
+    Ng2FilterPipeModule,
+    Ng2OrderModule,
+    NgxPaginationModule
 ],
   providers: [
     CategoryService,

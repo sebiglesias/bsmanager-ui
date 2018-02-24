@@ -20,7 +20,7 @@ export class UserCreateModalComponent implements OnInit {
   user: User = {
     password: '',
     name: '',
-    CUIT: '',
+    taxNum: '',
     address: '',
     birthday: new Date(),
     email: '',
@@ -43,7 +43,7 @@ export class UserCreateModalComponent implements OnInit {
   constructor(private userService: UserService) {
     this.userForm = new FormGroup({
       name: new FormControl(null, [Validators.required]),
-      CUIT: new FormControl(null, [Validators.required]),
+      taxNum: new FormControl(null, [Validators.required]),
       address: new FormControl(null, [Validators.required]),
       birthday: new FormControl(null, [Validators.required]),
       email: new FormControl(null, [Validators.required]),
@@ -85,7 +85,12 @@ export class UserCreateModalComponent implements OnInit {
   }
 
   createUser() {
-    this.userService.createUser(this.userForm.value).subscribe( () => this.throwAlert() );
+    const user = this.userForm.value;
+    let birthday = this.userForm.value.birthday;
+    birthday = JSON.parse(JSON.stringify(birthday));
+    birthday = birthday.date.year + '-' + birthday.date.month + '-' + birthday.date.day;
+    user.birthday = birthday;
+    this.userService.createUser(user).subscribe( () => this.throwAlert() );
     this.hide();
   }
 

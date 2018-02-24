@@ -29,37 +29,65 @@
         </div>
     </div>
     <div class="card-body">
-      <form>
+      <div>
         <div class="form-row">
+          <div class="col">
+            <label for="orders">Order By
+              <button *ngIf="reverse" type="button" class="btn-secondary btn-sm"><i class="material-icons" (click)="setReverse()">arrow_upward</i></button>
+              <button *ngIf="!reverse" type="button" class="btn-secondary btn-sm"><i class="material-icons" (click)="setReverse()">arrow_downward</i></button>
+            </label>
+            <div class="form-group" id="orders">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="nameRadio" id="nameRadio" value="name" [(ngModel)]="order" checked>
+                <label class="form-check-label" for="nameRadio">
+                  Name
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="priceRadio" id="priceRadio" value="costAfterTax" [(ngModel)]="order">
+                <label class="form-check-label" for="priceRadio">
+                  Price
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="quantityRadio" id="quantityRadio" value="quantity" [(ngModel)]="order">
+                <label class="form-check-label" for="quantityRadio">
+                  Quantity
+                </label>
+              </div>
+            </div>
+          </div>
           <div class="col">
             <div class="form-group">
               <label for="brand">Brand</label>
-              <select class="form-control" id="brand">
-                <option *ngFor="let brand of brands">{{brand.name}}</option>
+              <select class="form-control" id="brand" (change)="filterBrand($event.target.value)">
+                <option [value]="-1">All</option>
+                <option *ngFor="let brand of brands" [value]="brand.id">{{brand.name}}</option>
               </select>
             </div>
           </div>
           <div class="col">
             <div class="form-group">
               <label for="category">Category</label>
-              <select class="form-control" id="category">
-                <option *ngFor="let cat of categories">{{cat.plural_name}}</option>
+              <select class="form-control" id="category" (change)="filterCategory($event.target.value)">
+                <option [value]="undefined">All</option>
+                <option *ngFor="let cat of categories" [value]="cat.id">{{cat.plural_name}}</option>
               </select>
             </div>
           </div>
           <div class="col">
             <div class="form-group">
               <label for="search">Search</label>
-              <input class="form-control" id="search">
+              <input type="text" class="form-control" id="search" [(ngModel)]="productFilter.name">
             </div>
           </div>
         </div>
-      </form>
+      </div>
     </div>
   </div>
-  <div class="catalogue">
+  <div class="catalogue" *ngIf="filteredProducts !== undefined">
     <ul class="list-group" *ngIf="list">
-      <li class="list-group-item" *ngFor="let prod of products">
+      <li class="list-group-item" *ngFor="let prod of filteredProducts | filterBy: productFilter | orderBy: order : reverse | paginate: { itemsPerPage: itemsPerPage, currentPage: page }; let i = index">
         <ul class="product list-inline">
           <li class="list-inline-item">{{prod.name}}</li>
           <li class="list-inline-item">Code: {{prod.code}}</li>
@@ -74,9 +102,9 @@
         </div>
       </li>
     </ul>
-    <mat-grid-list cols="4" rowHeight="130px" *ngIf="!list">
+    <mat-grid-list cols="4" rowHeight="200px" *ngIf="!list">
       <mat-grid-tile
-        *ngFor="let prod of products"
+        *ngFor="let prod of filteredProducts | filterBy: productFilter | orderBy: order : reverse | paginate: { itemsPerPage: 10, currentPage: page }; let i = index"
         [colspan]="1"
         [rowspan]="1"
         [style.background]="'white'">
@@ -99,10 +127,19 @@
         </mat-grid-tile-footer>
       </mat-grid-tile>
     </mat-grid-list>
-    <mat-paginator [length]="filteredProducts.length"
-                   [pageSize]=""
-                   [pageSizeOptions]="[5, 10, 25, 50, 100]"
-                   (page)="pageEvent = $event">
-    </mat-paginator>
+    <div class="my-pagination">
+      <pagination-controls
+      maxSize="9"
+      (pageChange)="page = $event"
+      ></pagination-controls>
+    </div>
+    <!--<mat-paginator [length]="filteredProducts.length"-->
+                   <!--[pageSize]=""-->
+                   <!--[pageSizeOptions]="[5, 10, 25, 50, 100]"-->
+                   <!--(page)="pageEvent = $event">-->
+    <!--</mat-paginator>-->
+    <!--<div *ngIf="pageEvent">-->
+      <!--{{showProducts(pageEvent.length,pageEvent.pageSize,pageEvent.pageIndex)}}-->
+    <!--</div>-->
   </div>
 </div>

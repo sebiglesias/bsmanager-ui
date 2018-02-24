@@ -28,3 +28,8 @@
 .myCard {
   margin-bottom: 10px;
 }
+
+.my-pagination {
+  align-items: center;
+  justify-content: center;
+}

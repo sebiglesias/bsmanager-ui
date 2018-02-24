@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {Brand, User} from '../../models';
 import {BrandService} from '../brand.service';
 import {UserService} from '../../user-panel/user.service';
@@ -24,6 +24,7 @@ export class BrandCreateModalComponent implements OnInit {
   };
   brandForm;
   users: User[] = [];
+  brands: Brand[];
 
   @Output() createdBrandAlert = new EventEmitter<boolean>();
 
@@ -33,14 +34,29 @@ export class BrandCreateModalComponent implements OnInit {
 
   constructor(private brandService: BrandService, private userService: UserService) {
     this.brandForm = new FormGroup({
-      name: new FormControl(null, [Validators.required]),
-      infoURL: new FormControl(null, [Validators.required]),
-      observations: new FormControl(null, [Validators.required])
+      name: new FormControl(this.brand.name, [Validators.required, Validators.minLength(3)]),
+      infoURL: new FormControl(this.brand.infoURL, [Validators.required]),
+      observations: new FormControl(this.brand.observations, [Validators.required])
     });
   }
 
+  forbiddenNameValidator(nameRe: string): ValidatorFn {
+    return (control: AbstractControl): {[key: string]: any} => {
+      const forbidden = (control.value);
+      return forbidden ? {'forbiddenName': {value: control.value}} : null;
+    };
+  }
+
   ngOnInit() {
+    this.getBrands();
     this.loadedEmitter.next(this);
+  }
+
+  getBrands() {
+    this.brandService.getAllBrands().
+      subscribe( b => {
+        this.brands = b;
+    });
   }
 
   show() {

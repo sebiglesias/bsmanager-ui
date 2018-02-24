@@ -34,7 +34,7 @@ export class BrandComponent implements OnInit {
     this.getBrands();
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 5
+      pageLength: 10
     };
   }
 

@@ -19,7 +19,7 @@ export class UserEditModalComponent implements OnInit {
   user: User = {
     password: '',
     name: '',
-    CUIT: '',
+    taxNum: '',
     address: '',
     birthday: new Date(),
     email: '',
@@ -38,7 +38,7 @@ export class UserEditModalComponent implements OnInit {
   constructor(private userService: UserService) {
     this.userForm = new FormGroup({
       name: new FormControl(null, [Validators.required]),
-      CUIT: new FormControl(null, [Validators.required]),
+      taxNum: new FormControl(null, [Validators.required]),
       address: new FormControl(null, [Validators.required]),
       birthday: new FormControl(null, [Validators.required]),
       email: new FormControl(null, [Validators.required]),

@@ -34,7 +34,7 @@ export class MeasureComponent implements OnInit {
     this.getMeasures();
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 2
+      pageLength: 10
     };
   }
 

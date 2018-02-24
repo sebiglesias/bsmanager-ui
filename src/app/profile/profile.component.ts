@@ -24,7 +24,7 @@ export class ProfileComponent implements OnInit {
   user: User = {
     name: '',
     password: '',
-    CUIT: '',
+    taxNum: '',
     address: '',
     birthday: new Date(),
     email: '',
@@ -45,7 +45,7 @@ export class ProfileComponent implements OnInit {
     this.userForm = new FormGroup({
       name: new FormControl(null, [Validators.required]),
       password: new FormControl(null, [Validators.required]),
-      CUIT: new FormControl(null, [Validators.required]),
+      taxNum: new FormControl(null, [Validators.required]),
       address: new FormControl(null, [Validators.required]),
       birthday: new FormControl(null, [Validators.required]),
       email: new FormControl(null, [Validators.email]),
@@ -95,9 +95,11 @@ export class ProfileComponent implements OnInit {
     newUser.email = formValue.email;
     newUser.telephone = formValue.telephone;
     newUser.address = formValue.address;
-    newUser.CUIT = formValue.CUIT;
-    const birthday = this.userForm.value.birthday;
-    newUser.birthday = new Date(birthday.date.year + '/' + birthday.date.month + '/' + birthday.date.day);
+    newUser.taxNum = formValue.taxNum;
+    let birthday = this.userForm.value.birthday;
+    birthday = JSON.parse(JSON.stringify(birthday));
+    birthday = birthday.date.year + '-' + birthday.date.month + '-' + birthday.date.day;
+    newUser.birthday = birthday;
     if (formValue.password !== undefined && formValue.password !== null) {
       newUser.password = formValue.password;
     }

@@ -1,16 +1,74 @@
 <div class="container">
+  <br>
   <h3 class="element">Sales Management Panel</h3>
-  <form (submit)="filterById()">
-    <label>
-      From
-      <input type="date" name="from" id="from" [(ngModel)]="from" />
-    </label>
-    <label>
-      To
-      <input type="date" name="to" id="to" [(ngModel)]="to" />
-    </label>
-    <button class="btn btn-primary" type="submit">Filter by ID</button>
-  </form>
-  <br />
-  <table datatable [dtOptions]="dtOptions" class="row-border hover"></table>
+  <br>
+  <div class="row card myCard">
+    <div class="card-header">
+      <h4 class="card-title product">Filter by</h4>
+    </div>
+    <div class="card-body">
+      <div>
+        <div class="form-row">
+          <div class="col">
+            <label for="orders">Order By
+              <button *ngIf="reverse" type="button" class="btn-secondary btn-sm"><i class="material-icons" (click)="setReverse()">arrow_upward</i></button>
+              <button *ngIf="!reverse" type="button" class="btn-secondary btn-sm"><i class="material-icons" (click)="setReverse()">arrow_downward</i></button>
+            </label>
+            <div class="form-group" id="orders">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="nameRadio" id="nameRadio" value="id" [(ngModel)]="order" checked>
+                <label class="form-check-label" for="nameRadio">
+                  Id
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="priceRadio" id="priceRadio" value="price" [(ngModel)]="order">
+                <label class="form-check-label" for="priceRadio">
+                  Price
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="from">From</label>
+              <my-date-picker id="from" (dateChanged)="filterOrders($event.target.value)">
+              </my-date-picker>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="from">To</label>
+              <my-date-picker id="To" (dateChanged)="filterOrders($event.target.value)">
+              </my-date-picker>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="search">Search</label>
+              <input type="text" class="form-control" id="search" [(ngModel)]="productFilter.name">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let order of orders">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{order.date}}
+        </mat-panel-title>
+        <mat-panel-description>
+          {{order.price}}$ - # of items{{order.quantity}}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let detail of getDetail(order)">
+          {{detail.product.name}} - {{detail.quantity}} - Subtotal: {{detail.product.costAfterTax * detail.quantity}}
+        </li>
+      </ul>
+    </mat-expansion-panel>
+  </mat-accordion>
 </div>

@@ -115,6 +115,17 @@ export class ProductEditModalComponent implements OnInit {
 
   setProduct(g: Product) {
     this.product = g;
+    if (this.product.categories !== undefined) {
+      this.selectedCategories = this.product.categories;
+    }
+    if (this.product.brand !== undefined) {
+      this.selectedBrand = this.product.brand;
+      this.productForm.value.brand = this.selectedBrand.id;
+    }
+    if (this.product.measure !== undefined) {
+      this.selectedMeasure = this.product.measure;
+      this.productForm.value.measure = this.selectedMeasure.id;
+    }
   }
 
   editProduct() {

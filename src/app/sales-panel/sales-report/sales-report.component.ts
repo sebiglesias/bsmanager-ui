@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { DataTableDirective } from 'angular-datatables';
+import {SalesService} from '../sales.service';
+import {Order, OrderDetail} from '../../models';
 
 @Component({
   selector: 'app-sales-report',
@@ -7,37 +8,40 @@ import { DataTableDirective } from 'angular-datatables';
   styleUrls: ['./sales-report.component.css']
 })
 export class SalesReportComponent implements OnInit {
-  @ViewChild(DataTableDirective)
-  datatableElement: DataTableDirective;
+
   from: Date;
   to: Date;
-  dtOptions: DataTables.Settings = {};
+  orders: Order[];
+  details: OrderDetail[];
 
-  constructor() { }
+  constructor(private saleService: SalesService) { }
 
   ngOnInit(): void {
-    $.fn['dataTable'].ext.search.push((settings, data, dataIndex) => {
-
-    });
-    this.dtOptions = {
-      ajax: 'data/data.json',
-      columns: [{
-        title: 'ID',
-        data: 'id'
-      }, {
-        title: 'First name',
-        data: 'firstName'
-      }, {
-        title: 'Last name',
-        data: 'lastName'
-      }]
-    };
+    this.getOrderDetails();
+    this.getOrders();
   }
 
-  filterById(): void {
-    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      dtInstance.draw();
+  getOrders() {
+    this.saleService.getAllOrders().
+      subscribe( orders => {
+        this.orders = orders;
     });
   }
 
+  getOrderDetails() {
+    this.saleService.getAllOrderDetails().
+      subscribe( details => {
+        this.details = details;
+    });
+  }
+
+  getDetail(o: Order): OrderDetail[] {
+    return this.details.filter( d => {
+      return d.order.id === o.id;
+    });
+  }
+
+  filterOrders(d: Date) {
+
+  }
 }

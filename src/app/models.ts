@@ -2,7 +2,7 @@ export interface User {
   id?: number;
   name: string;
   password: string;
-  CUIT: string;
+  taxNum: string;
   address: string;
   birthday: Date;
   email: string;
@@ -13,7 +13,7 @@ export interface User {
 export interface FormattedUser {
   id: string;
   name: string;
-  CUIT: string;
+  taxNum: string;
   address: string;
   birthday: string;
   email: string;

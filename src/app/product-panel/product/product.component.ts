@@ -11,6 +11,7 @@ import {BrandService} from '../../brand-panel/brand.service';
 import {CategoryService} from '../../category-panel/category.service';
 import {ProductDetailModalComponent} from '../product-detail-modal/product-detail-modal.component';
 import {ProductStockModalComponent} from '../product-stock-modal/product-stock-modal.component';
+import {PageEvent} from '@angular/material';
 
 @Component({
   selector: 'app-product',
@@ -25,6 +26,10 @@ export class ProductComponent implements OnInit {
   categories: Category[] = [];
   list = true;
   filteredProducts: Product[] = [];
+  pageProducts: Product[] = [];
+  fBrand: Brand = undefined;
+  fCategory: Category = undefined;
+
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -35,6 +40,14 @@ export class ProductComponent implements OnInit {
   @ViewChild('deleteProductModal') deleteModal: ProductDeleteModalComponent;
   @ViewChild('createProductModal') createModal: ProductCreateModalComponent;
   @ViewChild('stockProductModal') stockModal: ProductStockModalComponent;
+  pageEvent: PageEvent;
+  page = 1;
+  itemsPerPage = 10;
+  productFilter: any = {
+    name: ''
+  };
+  order: 'name';
+  reverse = true;
 
   constructor(private productService: ProductService,
               public toastr: ToastsManager,
@@ -51,7 +64,7 @@ export class ProductComponent implements OnInit {
     this.getCategories();
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 5
+      pageLength: 10
     };
   }
 
@@ -60,7 +73,7 @@ export class ProductComponent implements OnInit {
       .getAllProducts()
       .subscribe(products => {
         this.products = products;
-        this.dtTrigger.next();
+        this.reFilter();
       });
   }
 
@@ -111,7 +124,6 @@ export class ProductComponent implements OnInit {
       .subscribe(
         products => {
           this.products = products;
-          this.reRender();
           this.submittedToast(submitted);
         },
         error => this.submittedToast(false),
@@ -124,7 +136,6 @@ export class ProductComponent implements OnInit {
       .subscribe(
         products => {
           this.products = products;
-          this.reRender();
           this.deleteToast(deleted);
         },
         error => this.deleteToast(false),
@@ -137,7 +148,6 @@ export class ProductComponent implements OnInit {
       .subscribe(
         products => {
           this.products = products;
-          this.reRender();
           this.updatedToast(deleted);
         },
         error => this.updatedToast(false),
@@ -150,18 +160,24 @@ export class ProductComponent implements OnInit {
       .subscribe(
         products => {
           this.products = products;
-          this.reRender();
           this.createdToast(created);
+          this.reFilter();
         },
         error => this.updatedToast(false),
         () => console.log('completed CreatedProduct'));
   }
 
-  reRender(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      dtInstance.destroy();
-      this.dtTrigger.next();
-    });
+  stockProductAlert(added: boolean) {
+    this.productService
+      .getAllProducts()
+      .subscribe(
+        products => {
+          this.products = products;
+          this.stockAddedToast(added);
+          this.reFilter();
+        },
+        error => this.stockAddedToast(false),
+        () => console.log('completed CreatedProduct'));
   }
 
   deleteToast(deleted: boolean) {
@@ -200,7 +216,57 @@ export class ProductComponent implements OnInit {
     }
   }
 
+  stockAddedToast(added: boolean) {
+    if (added) {
+      this.toastr.success('Success!', 'The stock was added correctly.');
+    } else {
+      this.toastr.error('Couldn\'t add stock!', 'There is something wrong with your connection.');
+    }
+  }
+
   setList(l: boolean) {
     this.list = l;
+  }
+
+  filterBrand(b: number) {
+    if (b === undefined || b === null || Number(b) === -1) {
+      this.fBrand = undefined;
+      this.reFilter();
+    } else {
+      this.brandService.getBrandById(b).subscribe( b => {
+        this.fBrand = b;
+        this.reFilter();
+      });
+    }
+  }
+
+  reFilter() {
+    this.filteredProducts = this.products.filter( prod => {
+      const matchesBrand = (this.fBrand === undefined) || (prod.brand !== null && (prod.brand.id === this.fBrand.id));
+      const matchesCategory = (this.fCategory === undefined) || (prod.categories !== null && (prod.categories.filter( cat => {
+        return cat.id === this.fCategory.id;
+      }) !== undefined));
+      return matchesBrand && matchesCategory;
+    });
+  }
+
+  filterCategory(c: number) {
+    if ( c === undefined || c === null || Number(c) === -1) {
+      this.fCategory = undefined;
+      this.reFilter();
+    } else {
+      this.categoryService.getCategoryByName(c).subscribe( cat => {
+        this.fCategory = cat;
+        this.reFilter();
+      });
+    }
+  }
+
+  showProducts(lth: number, pageSize: number, pageIndex: number) {
+
+  }
+
+  setReverse() {
+    this.reverse = !this.reverse;
   }
 }
