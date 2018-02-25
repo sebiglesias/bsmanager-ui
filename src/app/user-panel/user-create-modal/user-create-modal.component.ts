@@ -3,6 +3,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {User} from '../../models';
 import {UserService} from '../user.service';
 import {IMyDpOptions} from 'mydatepicker/dist';
+import * as generator from 'generate-password';
 
 @Component({
   selector: 'app-user-create-modal',
@@ -40,7 +41,9 @@ export class UserCreateModalComponent implements OnInit {
   @Output('loaded') loadedEmitter: EventEmitter < UserCreateModalComponent > = new EventEmitter < UserCreateModalComponent > ();
   @Output() positiveLabelAction = new EventEmitter();
 
-  constructor(private userService: UserService) {
+  constructor(
+    private userService: UserService
+  ) {
     this.userForm = new FormGroup({
       name: new FormControl(null, [Validators.required]),
       taxNum: new FormControl(null, [Validators.required]),
@@ -90,7 +93,13 @@ export class UserCreateModalComponent implements OnInit {
     birthday = JSON.parse(JSON.stringify(birthday));
     birthday = birthday.date.year + '-' + birthday.date.month + '-' + birthday.date.day;
     user.birthday = birthday;
-    this.userService.createUser(user).subscribe( () => this.throwAlert() );
+    user.password = generator.generate({
+      length: 12,
+      numbers: true
+    });
+    this.userService.createUser(user).subscribe( () => {
+      this.throwAlert();
+    });
     this.hide();
   }
 

@@ -9,7 +9,7 @@
       </div>
       <div class="modal-body">
         <ng-content></ng-content>
-        <form [formGroup]="productForm" (ngSubmit)="this.createProduct()">
+        <form name="prodForm" [formGroup]="productForm" (ngSubmit)="this.createProduct()">
           <div class="form-row">
             <div class="col">
               <div class="form-group">
@@ -20,11 +20,14 @@
                   type="text"
                   class="form-control"
                   data-length="20"
-                  required
                   name="name"
                   [(ngModel)]="product.name"
                   formControlName="name"
+                  required
                 >
+                <div *ngIf="productForm.controls['name'].errors && !productForm.controls['name'].pristine" class="error-msg">
+                  <div [hidden]="(!productForm.controls['name'].invalid || !productForm.controls['name'].touched) || !productForm.controls['name'].errors.required">Name is required.</div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="code">Product code</label>
@@ -102,11 +105,14 @@
                   type="number"
                   class="form-control"
                   data-length="20"
-                  required
                   name="costBeforeTax"
                   [(ngModel)]="product.costBeforeTax"
                   formControlName="costBeforeTax"
+                  required
                 >
+                <div *ngIf="productForm.controls['costBeforeTax'].errors" class="error-msg">
+                  <div [hidden]="!productForm.controls['costBeforeTax'].errors.required">Email is required.</div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="costAfterTax">Cost After Tax</label>
