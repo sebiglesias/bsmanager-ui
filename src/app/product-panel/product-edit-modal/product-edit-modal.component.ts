@@ -69,19 +69,18 @@ export class ProductEditModalComponent implements OnInit {
     private measureService: MeasureService,
               ) {
     this.productForm = new FormGroup({
-      code: new FormControl(null, [Validators.required]),
-      name: new FormControl(null, [Validators.required]),
-      cost: new FormControl(null, [Validators.required]),
-      price: new FormControl(null, [Validators.required]),
-      infoUrl: new FormControl(null, [Validators.required]),
-      longDescription: new FormControl(null, [Validators.required]),
-      shortDescription: new FormControl(null, [Validators.required]),
-      model: new FormControl(null, [Validators.required]),
-      series: new FormControl(null, [Validators.required]),
-      brand: new FormControl(null, [Validators.required]),
-      categories: new FormControl(null, [Validators.required]),
-      measure: new FormControl(null, [Validators.required]),
-      quantity: new FormControl(null, [Validators.required])
+      code: new FormControl(null, Validators.required),
+      name: new FormControl(null, Validators.required),
+      cost: new FormControl(null, Validators.required),
+      price: new FormControl(null, Validators.required),
+      infoUrl: new FormControl(null, Validators.required),
+      longDescription: new FormControl(null, Validators.required),
+      shortDescription: new FormControl(null, Validators.required),
+      model: new FormControl(null, Validators.required),
+      series: new FormControl(null, Validators.required),
+      brand: new FormControl(null, Validators.required),
+      measure: new FormControl(null, Validators.required),
+      quantity: new FormControl(null, Validators.required)
     });
   }
 
@@ -149,7 +148,7 @@ export class ProductEditModalComponent implements OnInit {
       this.isCodeTaken = false;
       this.invalidForm = false;
       const a = this.products.filter(c => {
-        if ( c.code === updatedProduct.code) {
+        if ( c.code === updatedProduct.code && c.code !== this.product.code) {
           this.isCodeTaken = true;
         }
         return this.isCodeTaken;
@@ -159,6 +158,7 @@ export class ProductEditModalComponent implements OnInit {
         return;
       } else {
         this.isCodeTaken = false;
+        delete updatedProduct['categories']['@category'];
         this.productService.updateProduct(updatedProduct).subscribe(
           () => this.throwAlert(true),
           err => this.throwAlert(false)

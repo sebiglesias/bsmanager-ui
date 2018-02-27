@@ -63,6 +63,7 @@ export class UserCreateModalComponent implements OnInit {
 
   ngOnInit() {
     this.getUsers();
+    this.setDate();
     this.loadedEmitter.next(this);
   }
 
@@ -154,6 +155,17 @@ export class UserCreateModalComponent implements OnInit {
       pass += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return pass;
+  }
+
+  setDate(): void {
+    // Set today date using the patchValue function
+    const date = new Date(this.user.birthday);
+    this.userForm.patchValue({birthday: {
+        date: {
+          year: date.getFullYear(),
+          month: date.getMonth() + 1,
+          day: date.getDate()}
+      }});
   }
 }
 

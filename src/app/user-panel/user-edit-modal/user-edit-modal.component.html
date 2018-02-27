@@ -3,7 +3,7 @@
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <span class="modal-title">{{title + " - User: " + user.id + " " + user.name}}</span>
+        <span class="modal-title">{{title + " - User: " + user.id + " " + user.firstname + ' ' +user.lastname}}</span>
         <i class="icon-cancel fr" data-dismiss="modal" aria-label="Close" (click)="cancelAction()"></i>
         <p *ngIf="subTitle">{{subTitle}}</p>
       </div>

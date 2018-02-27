@@ -65,8 +65,8 @@ export class PosComponent implements OnInit {
       this.fBrand = undefined;
       this.reFilter();
     } else {
-      this.brandService.getBrandById(b).subscribe( b => {
-        this.fBrand = b;
+      this.brandService.getBrandById(b).subscribe( br => {
+        this.fBrand = br;
         this.reFilter();
       });
     }

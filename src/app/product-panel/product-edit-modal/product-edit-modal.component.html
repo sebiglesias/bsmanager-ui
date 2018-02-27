@@ -3,7 +3,7 @@
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <span class="modal-title">{{title + " - Product: " + product.id + " " + product.name}}</span>
+        <span class="modal-title"><h3>{{title + " - Product: " + product.id + " " + product.name}}</h3></span>
         <i class="icon-cancel fr" data-dismiss="modal" aria-label="Close" (click)="cancelAction()"></i>
         <p *ngIf="subTitle">{{subTitle}}</p>
       </div>
@@ -89,7 +89,7 @@
                 <label for="brand">Brand</label>
                 <select id="brand" class="form-control" [(ngModel)]="product.brand" formControlName="brand" (change)="addBrand($event.target.value)">
                   <option *ngFor="let brand of brands"
-                          [value]="brand.id">
+                          [value]="brand.id" [selected]="product.brand.id === brand.id">
                     {{brand.name}}
                   </option>
                 </select>
@@ -101,7 +101,7 @@
                 <label for="measure">Unit of measure</label>
                 <select id="measure" class="form-control" [(ngModel)]="product.measure" formControlName="measure" (change)="addMeasure($event.target.value)">
                   <option *ngFor="let measure of measures"
-                          [value]="measure.id">
+                          [value]="measure.id" [selected]="product.measure.id === measure.id">
                     {{measure.name}}
                   </option>
                 </select>
@@ -245,7 +245,7 @@
               <button type="button" class="btn btn-primary"  aria-label="Close" (click)="this.hide()">
                 Cancel
               </button>
-              <button type="submit" class="btn btn-success" aria-label="Close" (click)="this.hide()">
+              <button type="submit" class="btn btn-success" aria-label="Close">
                 Edit
               </button>
             </div>

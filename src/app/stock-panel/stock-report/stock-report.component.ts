@@ -2,6 +2,11 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {SalesService} from '../../sales-panel/sales.service';
 import {Order, OrderDetail, User} from '../../models';
 import {UserService} from '../../user-panel/user.service';
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
+
+const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+const EXCEL_EXTENSION = '.xlsx';
 
 @Component({
   selector: 'app-stock-report',
@@ -129,5 +134,23 @@ export class StockReportComponent implements OnInit {
   filterEmployee(s: string) {
     this.employee = s;
     this.reFilter();
+  }
+
+  exportExcel() {
+    this.exportAsExcelFile(this.filteredOrders, 'Sales Report' + new Date().toDateString());
+  }
+
+  public exportAsExcelFile(json: any[], excelFileName: string): void {
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
+    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
+    this.saveAsExcelFile(excelBuffer, excelFileName);
+  }
+
+  private saveAsExcelFile(buffer: any, fileName: string): void {
+    const data: Blob = new Blob([buffer], {
+      type: EXCEL_TYPE
+    });
+    FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
   }
 }

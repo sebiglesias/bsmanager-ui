@@ -40,7 +40,8 @@ export class UserEditModalComponent implements OnInit {
 
   constructor(private userService: UserService) {
     this.userForm = new FormGroup({
-      name: new FormControl(null, [Validators.required]),
+      firstname: new FormControl(null, [Validators.required]),
+      lastname: new FormControl(null, [Validators.required]),
       taxNum: new FormControl(null, [Validators.required]),
       address: new FormControl(null, [Validators.required]),
       birthday: new FormControl(null, [Validators.required]),

@@ -3,30 +3,36 @@
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <span class="modal-title">{{product.name}} - {{product.code}}</span>
+        <span class="modal-title"><h3>{{product.name}} - {{product.code}} Detail</h3></span>
         <i class="icon-cancel fr" data-dismiss="modal" aria-label="Close" (click)="cancelAction()"></i>
         <p *ngIf="subTitle">{{subTitle}}</p>
       </div>
       <div class="modal-body">
         <ng-content></ng-content>
         <div role="main" class="container">
-          <p><b>Description</b>: {{product.longDescription}}</p>
-          <p><b>Short Description</b>: {{product.short}}</p>
-          <div class="col">
-            <p><b>Model</b>: {{product.model}}</p>
-            <p><b>Series</b>: {{product.series}}</p>
-            <p><b>Brand</b>: {{product.brand.name}}</p>
+          <div class="row">
+            <p><b>Description</b>: {{product.longDescription}}</p>
           </div>
-          <div class="col">
-            <p><b>Categories</b>:</p>
-            <p *ngFor="let cat of product.categories">{{cat.plural_name}}</p>
-            <p><b>Quantity</b>: {{product.quantity}}</p>
-            <p><b>Measure</b>: {{product.measure.name}}</p>
+          <div class="row">
+            <p><b>Short Description</b>: {{product.shortDescription}}</p>
           </div>
-          <div class="col">
-            <p><b>More info</b>: {{product.infoUrl}}</p>
-            <p><b>Cost</b>: {{product.cost}}</p>
-            <p><b>Price</b>: {{product.price}}</p>
+          <div class="row">
+            <div class="col">
+              <p><b>Model</b>: {{product.model}}</p>
+              <p><b>Series</b>: {{product.series}}</p>
+              <p><b>Brand</b>: {{product.brand.name}}</p>
+            </div>
+            <div class="col">
+              <p><b>Categories</b>:</p>
+              <p *ngFor="let cat of product.categories">{{cat.plural_name}}</p>
+              <p><b>Quantity</b>: {{product.quantity}}</p>
+              <p><b>Measure</b>: {{product.measure.name}}</p>
+            </div>
+            <div class="col">
+              <p><b>More info</b>: {{product.infoUrl}}</p>
+              <p><b>Cost</b>: {{product.cost}}</p>
+              <p><b>Price</b>: {{product.price}}</p>
+            </div>
           </div>
         </div>
       </div>

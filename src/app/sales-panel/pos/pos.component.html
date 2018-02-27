@@ -49,7 +49,7 @@
                   <label for="brand">Brand</label>
                   <select class="form-control" id="brand" (change)="filterBrand($event.target.value)">
                     <option [value]="-1">All</option>
-                    <option *ngFor="let brand of brands">{{brand.name}}</option>
+                    <option *ngFor="let brand of brands" [value]="brand.id">{{brand.name}}</option>
                   </select>
                 </div>
               </div>
@@ -58,7 +58,7 @@
                   <label for="category">Category</label>
                   <select class="form-control" id="category" (change)="filterCategory($event.target.value)">
                     <option [value]="-1">All</option>
-                    <option *ngFor="let cat of categories">{{cat.plural_name}}</option>
+                    <option *ngFor="let cat of categories" [value]="cat.id">{{cat.plural_name}}</option>
                   </select>
                 </div>
               </div>

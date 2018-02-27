@@ -8,6 +8,7 @@ import {SalesService} from '../sales.service';
 import {ToastsManager} from 'ng2-toastr';
 import {ProductService} from '../../product-panel/product.service';
 import {UserService} from '../../user-panel/user.service';
+import {AuthService} from '../../auth/auth.service';
 
 @Component({
   selector: 'app-sales-checkout-modal',
@@ -45,7 +46,8 @@ export class SalesCheckoutModalComponent implements OnInit {
     private productService: ProductService,
     public toastr: ToastsManager,
     vcr: ViewContainerRef,
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService,
   ) {
     toastr.setRootViewContainerRef(vcr);
   }
@@ -109,6 +111,7 @@ export class SalesCheckoutModalComponent implements OnInit {
   createOrder() {
     this.order.payment = this.secondFormGroup.value.payment;
     this.order.external = this.secondFormGroup.value.external;
+    this.order.employee = this.authService.getCurrentUser().email;
     this.saleService.createOrder(this.order).subscribe(
       smt => {
         this.orderDetails.forEach( oDetail => {

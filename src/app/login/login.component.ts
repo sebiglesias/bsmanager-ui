@@ -54,8 +54,8 @@ export class LoginComponent implements OnInit {
           if (user.email === email) {
             if (user.password === password) {
               this.authService.setUser(user);
-              this.router.navigate(['/']);
               this.throwToast(true);
+              this.router.navigate(['/']).then();
               return;
             }
           }
@@ -65,12 +65,13 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  throwToast(created: boolean) {
+  throwToast(created: boolean): boolean {
     console.log('entre a createdToast');
     if (created) {
       this.toastr.success('Success!', 'You are now logged in.');
     } else {
       this.toastr.error('Couldn\'t log in!', 'Are you typing your password correctly?');
     }
+    return created;
   }
 }
