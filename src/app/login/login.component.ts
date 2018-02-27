@@ -14,7 +14,8 @@ import {ToastsManager} from 'ng2-toastr';
 export class LoginComponent implements OnInit {
 
   user: User = {
-    name: '',
+    firstname: '',
+    lastname: '',
     password: '',
     taxNum: '',
     address: '',
@@ -23,7 +24,9 @@ export class LoginComponent implements OnInit {
     telephone: '',
     admin: false
   };
-  loginForm;
+  loginForm: FormGroup;
+  invalidForm = false;
+
   @Output() updatedUserAlert = new EventEmitter<boolean>();
   constructor(private userService: UserService,
               private authService: AuthService,
@@ -32,8 +35,8 @@ export class LoginComponent implements OnInit {
               vcr: ViewContainerRef) {
     this.toastr.setRootViewContainerRef(vcr);
     this.loginForm = new FormGroup({
-      email: new FormControl(null, [Validators.email]),
-      password: new FormControl()
+      email: new FormControl('', Validators.email),
+      password: new FormControl('', Validators.required)
     });
   }
 
@@ -41,19 +44,25 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    const email = this.loginForm.value.email;
-    const password = this.loginForm.value.password;
-    this.userService.getAllUsers().subscribe( users => {
-     users.filter( user => {
-       if (user.email === email) {
-         if (user.password === password) {
-           this.authService.setUser(user);
-           this.router.navigate(['/']);
-           this.throwToast(true);
-         }
-       }
-     });
-    }, err => this.throwToast(err));
+    this.invalidForm = true;
+    if (this.loginForm.valid) {
+      this.invalidForm = false;
+      const email = this.loginForm.value.email;
+      const password = this.loginForm.value.password;
+      this.userService.getAllUsers().subscribe(users => {
+        users.filter(user => {
+          if (user.email === email) {
+            if (user.password === password) {
+              this.authService.setUser(user);
+              this.router.navigate(['/']);
+              this.throwToast(true);
+              return;
+            }
+          }
+          this.invalidForm = true;
+        });
+      }, err => this.throwToast(err));
+    }
   }
 
   throwToast(created: boolean) {

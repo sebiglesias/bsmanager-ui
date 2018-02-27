@@ -24,6 +24,12 @@
               formControlName="name"
             >
           </div>
+          <div *ngIf="invalidForm && !measureForm.controls['name'].valid" class="alert alert-danger">
+            Please make sure you put a measure name.
+          </div>
+          <div *ngIf="invalidForm && isNameTaken" class="alert alert-danger">
+            This name is already taken.
+          </div>
           <div class="form-group">
             <label for="abbreviation">Measure abbreviation</label>
             <input
@@ -38,12 +44,18 @@
               formControlName="abbreviation"
             >
           </div>
+          <div *ngIf="invalidForm && !measureForm.controls['abbreviation'].valid" class="alert alert-danger">
+            Please make sure you put an abbreviation name.
+          </div>
+          <div *ngIf="invalidForm && isAbbreviationTaken" class="alert alert-danger">
+            This abbreviation is already taken.
+          </div>
           <div class="modal-footer">
             <div class="popup-footer">
               <button type="button" class="btn btn-primary"  aria-label="Close" (click)="this.hide()">
                 Cancel
               </button>
-              <button type="submit" class="btn btn-success" aria-label="Close" (click)="this.hide()">
+              <button type="submit" class="btn btn-success" aria-label="Close">
                 Create
               </button>
             </div>

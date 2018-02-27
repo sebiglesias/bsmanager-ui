@@ -1,9 +1,7 @@
 import {Component, Input, Output, EventEmitter, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Form, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ToastsManager} from 'ng2-toastr';
 
-import * as Generator from 'random-password-generator';
-import * as Encryptor from 'bcryptjs';
 import {AuthService} from '../auth/auth.service';
 import { User} from '../models';
 import {UserService} from '../user-panel/user.service';
@@ -22,7 +20,8 @@ export class ProfileComponent implements OnInit {
     dateFormat: 'yyyy-mm-dd'
   };
   user: User = {
-    name: '',
+    firstname: '',
+    lastname: '',
     password: '',
     taxNum: '',
     address: '',
@@ -31,7 +30,13 @@ export class ProfileComponent implements OnInit {
     telephone: '',
     admin: false
   };
-  userForm;
+  userForm: FormGroup;
+  passwordForm: FormGroup;
+  invalidForm = false;
+  isEmailTaken = false;
+  isPasswordDifferent = false;
+  users: User[] = [];
+  invalidPasswordForm = false;
 
   @Output() updatedUserAlert = new EventEmitter<boolean>();
 
@@ -43,13 +48,16 @@ export class ProfileComponent implements OnInit {
               vcr: ViewContainerRef) {
     this.toastr.setRootViewContainerRef(vcr);
     this.userForm = new FormGroup({
-      name: new FormControl(null, [Validators.required]),
-      password: new FormControl(null, [Validators.required]),
+      firstname: new FormControl(null, [Validators.required]),
+      lastname: new FormControl(null, [Validators.required]),
       taxNum: new FormControl(null, [Validators.required]),
       address: new FormControl(null, [Validators.required]),
       birthday: new FormControl(null, [Validators.required]),
-      email: new FormControl(null, [Validators.email]),
+      email: new FormControl(null, [Validators.email, Validators.required]),
       telephone: new FormControl(null, [Validators.required]),
+    });
+    this.passwordForm = new FormGroup({
+      password: new FormControl(null, [Validators.required]),
       confirmPassword: new FormControl(null, [Validators.required])
     });
   }
@@ -66,6 +74,7 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getUsers();
     this.user = this.authService.getCurrentUser();
     this.setDate();
   }
@@ -75,12 +84,7 @@ export class ProfileComponent implements OnInit {
     return false;
   }
 
-  throwAlert() {
-    this.updatedUserAlert.emit(true);
-  }
-
   throwToast(created: boolean) {
-    console.log('entre a createdToast');
     if (created) {
       this.toastr.success('Success!', 'Your info has been updated.');
     } else {
@@ -88,26 +92,74 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  changedPasswordToast(b: boolean) {
+    if (b) {
+      this.toastr.success('You password has been changed.', 'Success!');
+    } else {
+      this.toastr.error('Couldn\'t update info!', 'There is something wrong with your connection.');
+    }
+  }
+
+  changePassword() {
+    const formValue = this.passwordForm.value;
+    this.isPasswordDifferent = false;
+    this.invalidPasswordForm = false;
+    if (formValue.password !== undefined && formValue.password !== null) {
+      this.isPasswordDifferent = formValue.password !== formValue.confirmPassword;
+      if (!this.isPasswordDifferent && !this.invalidForm) {
+        this.user.password = formValue.password;
+        this.userService.updateUser(this.user).subscribe( u => {
+          this.changedPasswordToast(true);
+          this.getUsers();
+          this.authService.setUser(u);
+          return;
+        });
+      }
+    }
+    this.invalidPasswordForm = true;
+  }
+
   updateUser() {
+
     const formValue = this.userForm.value;
     const newUser = this.user;
-    newUser.name = formValue.name;
+    newUser.firstname = formValue.firstname;
+    newUser.lastname = formValue.lastname;
     newUser.email = formValue.email;
     newUser.telephone = formValue.telephone;
     newUser.address = formValue.address;
     newUser.taxNum = formValue.taxNum;
     let birthday = this.userForm.value.birthday;
-    birthday = JSON.parse(JSON.stringify(birthday));
-    birthday = birthday.date.year + '-' + birthday.date.month + '-' + birthday.date.day;
+    birthday = new Date(birthday);
+    birthday = birthday.getFullYear() + '-' + birthday.getMonth() + '-' + (birthday.getDay() + 1);
     newUser.birthday = birthday;
-    if (formValue.password !== undefined && formValue.password !== null) {
-      newUser.password = formValue.password;
+    if (this.userForm.valid) {
+      this.isEmailTaken = false;
+      this.invalidForm = false;
+      const a = this.users.filter(c => {
+        if ( c.email === newUser.email && c.id !== newUser.id) {
+          this.isEmailTaken = true;
+        }
+        return this.isEmailTaken;
+      });
+      if (a.length > 0) {
+        this.invalidForm = true;
+        return;
+      } else {
+        this.isEmailTaken = false;
+        this.userService.updateUser(newUser).subscribe( user => {
+          this.throwToast(true);
+          this.authService.setUser(user);
+          }, err => this.throwToast(false)
+        );
+        this.getUsers();
+        return;
+      }
     }
-    this.userService.updateUser(newUser).subscribe( user => {
-      this.throwToast(true);
-      this.authService.setUser(user);
-    }, err => console.log(err));
-
+    this.invalidForm = true;
   }
 
+  getUsers() {
+    this.userService.getAllUsers().subscribe( u => this.users = u);
+  }
 }

@@ -25,8 +25,8 @@
                   formControlName="name"
                   required
                 >
-                <div *ngIf="productForm.controls['name'].errors && !productForm.controls['name'].pristine" class="error-msg">
-                  <div [hidden]="(!productForm.controls['name'].invalid || !productForm.controls['name'].touched) || !productForm.controls['name'].errors.required">Name is required.</div>
+                <div *ngIf="invalidForm && !productForm.controls['name'].valid" class="alert alert-danger">
+                  A 2 character long product name is required.
                 </div>
               </div>
               <div class="form-group">
@@ -42,6 +42,12 @@
                   [(ngModel)]="product.code"
                   formControlName="code"
                 >
+                <div *ngIf="invalidForm && !productForm.controls['code'].valid" class="alert alert-danger">
+                  A 2 character long product code is required.
+                </div>
+                <div *ngIf="invalidForm && isCodeTaken" class="alert alert-danger">
+                  This code is already taken.
+                </div>
               </div>
               <div class="form-group">
                 <label for="model">Product model</label>
@@ -56,6 +62,9 @@
                   [(ngModel)]="product.model"
                   formControlName="model"
                 >
+                <div *ngIf="invalidForm && !productForm.controls['model'].valid" class="alert alert-danger">
+                  A 2 character long product model is required.
+                </div>
               </div>
             </div>
             <div class="col">
@@ -72,61 +81,74 @@
                   [(ngModel)]="product.series"
                   formControlName="series"
                 >
+                <div *ngIf="invalidForm && !productForm.controls['series'].valid" class="alert alert-danger">
+                  A 2 character long product series is required.
+                </div>
               </div>
               <div class="form-group">
                 <label for="brand">Brand</label>
-                <select id="brand" class="form-control" [(ngModel)]="product.brand" formControlName="brand">
+                <select id="brand" class="form-control" (change)="addBrand($event.target.value)" [(ngModel)]="product.brand"
+                        formControlName="brand" required>
                   <option [value]="undefined">Please select a brand.</option>
                   <option *ngFor="let brand of brands"
                           [value]="brand.id">
                     {{brand.name}}
                   </option>
                 </select>
+                <div *ngIf="invalidForm && selectedBrand === undefined" class="alert alert-danger">
+                  A brand is required. If it isn't created ask an admin to create one on the <a href="/brands" class="btn-link">Brand panel</a>
+                </div>
               </div>
               <div class="form-group">
                 <label for="measure">Unit of measure</label>
-                <select id="measure" class="form-control" [(ngModel)]="product.measure" formControlName="measure">
+                <select id="measure" class="form-control" name="measures" (change)="addMeasure($event.target.value)" [(ngModel)]="product.measure"
+                        formControlName="measure"required>
                   <option [value]="undefined">Please select a unit of measure.</option>
                   <option *ngFor="let measure of measures"
                           [value]="measure.id">
                     {{measure.name}}
                   </option>
                 </select>
+                <div *ngIf="invalidForm && selectedMeasure === undefined" class="alert alert-danger">
+                  A measure is required. If it isn't created ask an admin to create one on the <a href="/measures" class="btn-link">Measure panel</a>
+                </div>
               </div>
             </div>
           </div>
           <div class="form-row">
             <div class="col">
               <div class="form-group">
-                <label for="costBeforeTax">Cost Before Tax</label>
+                <label for="cost">Cost</label>
                 <input
-                  placeholder="Cost Before tax"
-                  id="costBeforeTax"
+                  placeholder="Cost of the product"
+                  id="cost"
                   type="number"
                   class="form-control"
-                  data-length="20"
-                  name="costBeforeTax"
-                  [(ngModel)]="product.costBeforeTax"
-                  formControlName="costBeforeTax"
+                  name="cost"
+                  [(ngModel)]="product.cost"
+                  formControlName="cost"
                   required
                 >
-                <div *ngIf="productForm.controls['costBeforeTax'].errors" class="error-msg">
-                  <div [hidden]="!productForm.controls['costBeforeTax'].errors.required">Email is required.</div>
+                <div *ngIf="invalidForm && !productForm.controls['cost'].valid" class="alert alert-danger">
+                  A cost is required.
                 </div>
               </div>
               <div class="form-group">
-                <label for="costAfterTax">Cost After Tax</label>
+                <label for="price">Product price</label>
                 <input
-                  placeholder="Cost after tax"
-                  id="costAfterTax"
+                  placeholder="Product price"
+                  id="price"
                   type="number"
                   class="form-control"
                   data-length="20"
                   required
-                  name="costAfterTax"
-                  [(ngModel)]="product.costAfterTax"
-                  formControlName="costAfterTax"
+                  name="price"
+                  [(ngModel)]="product.price"
+                  formControlName="price"
                 >
+                <div *ngIf="invalidForm && !productForm.controls['price'].valid" class="alert alert-danger">
+                  A price is required.
+                </div>
               </div>
               <div class="form-group">
                 <label for="infoUrl">Information link</label>
@@ -141,6 +163,9 @@
                   [(ngModel)]="product.infoUrl"
                   formControlName="infoUrl"
                 >
+                <div *ngIf="invalidForm && !productForm.controls['infoUrl'].valid" class="alert alert-danger">
+                  A info link is required.
+                </div>
               </div>
             </div>
             <div class="col">
@@ -157,6 +182,9 @@
                   [(ngModel)]="product.longDescription"
                   formControlName="longDescription"
                 ></textarea>
+                <div *ngIf="invalidForm && !productForm.controls['longDescription'].valid" class="alert alert-danger">
+                  A long description is required.
+                </div>
               </div>
               <div class="form-group">
                 <label for="shortDescription">Short product description</label>
@@ -171,6 +199,9 @@
                   [(ngModel)]="product.shortDescription"
                   formControlName="shortDescription"
                 ></textarea>
+                <div *ngIf="invalidForm && !productForm.controls['shortDescription'].valid" class="alert alert-danger">
+                  A short description is required.
+                </div>
               </div>
               <div class="form-group">
                 <label for="quantity">Product initial quantity</label>
@@ -192,12 +223,17 @@
             <div class="col">
               <div class="form-group">
                 <label for="categories">Categories</label>
-                <select id="categories" class="form-control" required name="categories" (change)="addCategory($event.target.value)">
+                <select id="categories" class="form-control" name="categories" (change)="addCategory($event.target.value)" [(ngModel)]="product.categories"
+                        formControlName="categories"required>
+                  <option [value]="undefined">Please select at least one category.</option>
                   <option *ngFor="let category of categories"
                           [value]="category.id">
                     {{category.singular_name}}
                   </option>
                 </select>
+                <div *ngIf="invalidForm && selectedCategories.length === 0" class="alert alert-danger">
+                  A category is required. If it isn't created ask an admin to create one on the <a class="btn-link" href="/categories">Category panel</a>
+                </div>
               </div>
             </div>
             <div class="col">
@@ -213,7 +249,7 @@
               <button type="button" class="btn btn-primary"  aria-label="Close" (click)="this.hide()">
                 Cancel
               </button>
-              <button type="submit" class="btn btn-success" aria-label="Close" (click)="this.hide()">
+              <button type="submit" class="btn btn-success" aria-label="Close">
                 Create
               </button>
             </div>

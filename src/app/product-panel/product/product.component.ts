@@ -27,7 +27,6 @@ export class ProductComponent implements OnInit {
   categories: Category[] = [];
   list = true;
   filteredProducts: Product[] = [];
-  pageProducts: Product[] = [];
   fBrand: Brand = undefined;
   fCategory: Category = undefined;
 
@@ -205,7 +204,7 @@ export class ProductComponent implements OnInit {
     if (deleted) {
       this.toastr.success('Success!', 'The product was deleted correctly.');
     } else {
-      this.toastr.error('Couldn\'t delete product!', 'There is something wrong with your connection.');
+      this.toastr.error('The product is involved in a sale and cannot be deleted', 'Couldn\'t delete product!');
     }
   }
 
@@ -261,8 +260,8 @@ export class ProductComponent implements OnInit {
       this.fBrand = undefined;
       this.reFilter();
     } else {
-      this.brandService.getBrandById(b).subscribe( b => {
-        this.fBrand = b;
+      this.brandService.getBrandById(b).subscribe( br => {
+        this.fBrand = br;
         this.reFilter();
       });
     }
@@ -273,7 +272,7 @@ export class ProductComponent implements OnInit {
       const matchesBrand = (this.fBrand === undefined) || (prod.brand !== null && (prod.brand.id === this.fBrand.id));
       const matchesCategory = (this.fCategory === undefined) || (prod.categories !== null && (prod.categories.filter( cat => {
         return cat.id === this.fCategory.id;
-      }) !== undefined));
+      }).length > 0));
       return matchesBrand && matchesCategory;
     });
   }

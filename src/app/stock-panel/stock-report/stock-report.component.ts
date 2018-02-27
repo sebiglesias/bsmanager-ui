@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import {SalesService} from '../sales.service';
+import {SalesService} from '../../sales-panel/sales.service';
 import {Order, OrderDetail, User} from '../../models';
 import {UserService} from '../../user-panel/user.service';
 
 @Component({
-  selector: 'app-sales-report',
-  templateUrl: './sales-report.component.html',
-  styleUrls: ['./sales-report.component.css']
+  selector: 'app-stock-report',
+  templateUrl: './stock-report.component.html',
+  styleUrls: ['./stock-report.component.css']
 })
-export class SalesReportComponent implements OnInit {
+export class StockReportComponent implements OnInit {
 
   from: Date;
   to: Date;
@@ -25,9 +25,10 @@ export class SalesReportComponent implements OnInit {
   users: User[] = [];
   employee = 'all';
 
+
   constructor(
     private saleService: SalesService,
-    private userService: UserService,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -43,10 +44,10 @@ export class SalesReportComponent implements OnInit {
 
   getOrders() {
     this.saleService.getAllOrders().
-      subscribe( orders => {
-        this.orders = orders.filter( o => {
-          return o.sale;
-        });
+    subscribe( orders => {
+      this.orders = orders.filter( o => {
+        return !o.sale;
+      });
     });
   }
 
@@ -59,8 +60,8 @@ export class SalesReportComponent implements OnInit {
 
   getOrderDetails() {
     this.saleService.getAllOrderDetails().
-      subscribe( details => {
-        this.details = details;
+    subscribe( details => {
+      this.details = details;
     });
   }
 

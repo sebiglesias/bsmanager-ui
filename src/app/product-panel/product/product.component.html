@@ -35,9 +35,10 @@
       <div>
         <div class="form-row">
           <div class="col">
-            <label for="orders">Order By
-              <button *ngIf="reverse" type="button" class="btn-secondary btn-sm"><i class="material-icons" (click)="setReverse()">arrow_upward</i></button>
-              <button *ngIf="!reverse" type="button" class="btn-secondary btn-sm"><i class="material-icons" (click)="setReverse()">arrow_downward</i></button>
+            <label for="orders" class="align-content-center">
+              <i class="material-icons" *ngIf="reverse" (click)="setReverse()">arrow_upward</i>
+              <i class="material-icons" *ngIf="!reverse"(click)="setReverse()">arrow_downward</i>
+              Order By
             </label>
             <div class="form-group" id="orders">
               <div class="form-check">
@@ -73,7 +74,7 @@
             <div class="form-group">
               <label for="category">Category</label>
               <select class="form-control" id="category" (change)="filterCategory($event.target.value)">
-                <option [value]="undefined">All</option>
+                <option [value]="-1">All</option>
                 <option *ngFor="let cat of categories" [value]="cat.id">{{cat.plural_name}}</option>
               </select>
             </div>
@@ -93,9 +94,9 @@
       <li class="list-group-item" *ngFor="let prod of filteredProducts | filterBy: productFilter | orderBy: order : reverse | paginate: { itemsPerPage: itemsPerPage, currentPage: page }; let i = index">
         <ul class="product list-inline">
           <li class="list-inline-item">{{prod.name}}</li>
-          <li class="list-inline-item">Code: {{prod.code}}</li>
-          <li class="list-inline-item">Price: {{prod.costAfterTax}}</li>
-          <li class="list-inline-item">Quantity: {{prod.quantity}}</li>
+          <li class="list-inline-item"><b>Code:</b> {{prod.code}}</li>
+          <li class="list-inline-item"><b>Price:</b> {{prod.costAfterTax}}</li>
+          <li class="list-inline-item"><b>Quantity:</b> {{prod.quantity}}</li>
         </ul>
         <div class="btn-group my-group" role="group" aria-label="Product actions">
           <button type="button" class="btn btn-outline-secondary" (click)="stockProductOpenModal(prod)"><i class="material-icons">add_circle</i></button>
@@ -116,15 +117,16 @@
         </mat-grid-tile-header>
         <div class="">
           <ul class="product list-inline">
-            <li class="list-inline-item">Code: {{prod.code}}</li>
-            <li class="list-inline-item">Price: {{prod.costAfterTax}}</li>
-            <li class="list-inline-item">Quantity: {{prod.quantity}}</li>
+            <li class="list-inline-item"><b>Code:</b> {{prod.code}}</li>
+            <li class="list-inline-item"><b>Price:</b> {{prod.price}}</li>
+            <li class="list-inline-item"><b>Quantity:</b> {{prod.quantity}}</li>
           </ul>
         </div>
         <mat-grid-tile-footer>
           <div class="btn-group" align="center">
-            <button type="button" class="btn btn-secondary" (click)="editRowOpenModal(prod)"><i class="material-icons">edit</i></button>
-            <button type="button" class="btn btn-secondary" (click)="deleteRowOpenModal(prod)"><i class="material-icons">delete</i></button>
+            <button type="button" class="btn btn-outline-secondary" (click)="stockProductOpenModal(prod)"><i class="material-icons">add_circle</i></button>
+            <button type="button" class="btn btn-outline-secondary" (click)="editRowOpenModal(prod)"><i class="material-icons">edit</i></button>
+            <button type="button" class="btn btn-outline-secondary" (click)="deleteRowOpenModal(prod)"><i class="material-icons">delete</i></button>
             <button type="button" class="btn btn-outline-secondary" (click)="detailProductOpenModal(prod)"><i class="material-icons">more</i></button>
           </div>
         </mat-grid-tile-footer>
@@ -136,13 +138,8 @@
       (pageChange)="page = $event"
       ></pagination-controls>
     </div>
-    <!--<mat-paginator [length]="filteredProducts.length"-->
-                   <!--[pageSize]=""-->
-                   <!--[pageSizeOptions]="[5, 10, 25, 50, 100]"-->
-                   <!--(page)="pageEvent = $event">-->
-    <!--</mat-paginator>-->
-    <!--<div *ngIf="pageEvent">-->
-      <!--{{showProducts(pageEvent.length,pageEvent.pageSize,pageEvent.pageIndex)}}-->
-    <!--</div>-->
+  </div>
+  <div class="jumbotron" *ngIf="filteredProducts === undefined || filteredProducts.length === 0">
+    <h1>Oops, there seems to be no products with those filters</h1>
   </div>
 </div>

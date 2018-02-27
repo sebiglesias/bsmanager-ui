@@ -12,16 +12,22 @@
         <div role="main" class="container">
           <p><b>Description</b>: {{product.longDescription}}</p>
           <p><b>Short Description</b>: {{product.short}}</p>
-          <p><b>Model</b>: {{product.model}}</p>
-          <p><b>Series</b>: {{product.series}}</p>
-          <p><b>Brand</b>: {{product.brand.name}}</p>
-          <p><b>Categories</b>:</p>
-          <p *ngFor="let cat of product.categories">{{cat.plural_name}}</p>
-          <p><b>Quantity</b>: {{product.quantity}}</p>
-          <p><b>Measure</b>: {{product.measure.name}}</p>
-          <p><b>More info</b>: {{product.infoUrl}}</p>
-          <p><b>Cost before tax</b>: {{product.costBeforeTax}}</p>
-          <p><b>Cost after tax</b>: {{product.costAfterTax}}</p>
+          <div class="col">
+            <p><b>Model</b>: {{product.model}}</p>
+            <p><b>Series</b>: {{product.series}}</p>
+            <p><b>Brand</b>: {{product.brand.name}}</p>
+          </div>
+          <div class="col">
+            <p><b>Categories</b>:</p>
+            <p *ngFor="let cat of product.categories">{{cat.plural_name}}</p>
+            <p><b>Quantity</b>: {{product.quantity}}</p>
+            <p><b>Measure</b>: {{product.measure.name}}</p>
+          </div>
+          <div class="col">
+            <p><b>More info</b>: {{product.infoUrl}}</p>
+            <p><b>Cost</b>: {{product.cost}}</p>
+            <p><b>Price</b>: {{product.price}}</p>
+          </div>
         </div>
       </div>
       <div class="modal-footer">

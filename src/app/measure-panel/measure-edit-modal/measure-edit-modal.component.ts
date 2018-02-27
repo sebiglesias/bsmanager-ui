@@ -20,8 +20,11 @@ export class MeasureEditModalComponent implements OnInit {
     name: '',
     abbreviation: ''
   };
-  measureForm;
-  users: User[] = [];
+  measureForm: FormGroup;
+  invalidForm = false;
+  isNameTaken = false;
+  isAbbreviationTaken = false;
+  measures: Measure[] = [];
 
   @Output() updatedMeasureAlert = new EventEmitter<boolean>();
 
@@ -37,7 +40,13 @@ export class MeasureEditModalComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getMeasures();
     this.loadedEmitter.next(this);
+  }
+
+  getMeasures() {
+    this.measureService.getAllMeasures().
+    subscribe( m => this.measures = m);
   }
 
   show() {
@@ -69,14 +78,41 @@ export class MeasureEditModalComponent implements OnInit {
   }
 
   editMeasure() {
+
     const updatedMeasure = this.measureForm.value;
     updatedMeasure.id = this.measure.id;
-    this.measureService.updateMeasure(updatedMeasure).subscribe( () => this.throwAlert() );
-    this.hide();
+    if (this.measureForm.valid) {
+      this.isNameTaken = false;
+      this.isAbbreviationTaken = false;
+      this.invalidForm = false;
+      const a = this.measures.filter(c => {
+        if ( c.name === updatedMeasure.name  && c.id !== updatedMeasure.id) {
+          this.isNameTaken = true;
+        }
+        if (c.abbreviation === updatedMeasure.abbreviation && c.id !== updatedMeasure.id) {
+          this.isAbbreviationTaken = true;
+        }
+        return this.isNameTaken || this.isAbbreviationTaken;
+      });
+      if (a.length > 0) {
+        this.invalidForm = true;
+        return;
+      } else {
+        this.isNameTaken = false;
+        this.isAbbreviationTaken = false;
+        this.measureService.updateMeasure(updatedMeasure).subscribe( () => this.throwAlert(true), err => {
+          this.throwAlert(false);
+        } );
+        this.hide();
+        this.getMeasures();
+        return;
+      }
+    }
+    this.invalidForm = true;
   }
 
-  throwAlert() {
-    this.updatedMeasureAlert.emit(true);
+  throwAlert(b: boolean) {
+    this.updatedMeasureAlert.emit(b);
   }
 }
 

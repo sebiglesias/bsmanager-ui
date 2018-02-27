@@ -7,7 +7,7 @@ import 'rxjs/add/operator/catch';
 import {User} from '../models';
 
 const userUrl = environment.baseUrl + '/user';
-
+const mailUrl = environment.expressUrl;
 @Injectable()
 export class UserService {
 
@@ -50,5 +50,16 @@ export class UserService {
     return this.http
       .get(userUrl + '/' + id)
       .catch(this.handleError);
+  }
+
+  sendMail(to: string, subject: string, content: string, html: string) {
+    const body = {
+      to: to,
+      subject: subject,
+      content: content,
+      html: html
+    };
+    this.http
+      .post(mailUrl, body).subscribe( a => console.log(a), err => this.handleError);
   }
 }

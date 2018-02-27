@@ -9,7 +9,7 @@
       </div>
       <div class="modal-body">
         <ng-content></ng-content>
-        <form [formGroup]="brandForm" (ngSubmit)="this.createBrand()">
+        <form [formGroup]="brandForm" (ngSubmit)="createBrand()">
           <div class="form-group">
             <label for="name">Brand name</label>
             <input
@@ -18,25 +18,32 @@
               type="text"
               class="form-control"
               data-length="20"
-              required
               name="name"
-              [(ngModel)]="brand.name"
               formControlName="name"
+              required
             >
           </div>
+          <div *ngIf="invalidForm && !brandForm.controls['name'].valid" class="alert alert-danger">
+            Please make sure you put at least a 2 character long name.
+          </div>
+          <div *ngIf="invalidForm && isNameTaken" class="alert alert-danger">
+            This brand name is already taken.
+          </div>
           <div class="form-group">
-            <label for="infoURL">Info URL</label>
+            <label for="infoUrl">Info URL</label>
             <input
               placeholder="Choose a info url"
-              id="infoURL"
+              id="infoUrl"
               type="text"
               class="form-control"
               data-length="50"
               required
-              name="infoURL"
-              [(ngModel)]="brand.infoURL"
-              formControlName="infoURL"
+              name="infoUrl"
+              formControlName="infoUrl"
             >
+          </div>
+          <div *ngIf="invalidForm && !brandForm.controls['infoUrl'].valid" class="alert alert-danger">
+            Please make sure you put a info url for this brand.
           </div>
           <div class="form-group">
             <label for="observations">Observations</label>
@@ -44,19 +51,21 @@
               id="observations"
               type="text"
               class="form-control"
-              data-length="20"
-              required
+              data-length="50"
               name="observations"
-              [(ngModel)]="brand.observations"
               formControlName="observations"
+              required
             >
+          </div>
+          <div *ngIf="invalidForm && !brandForm.controls['observations'].valid" class="alert alert-danger">
+            Please make sure you put some observations.
           </div>
           <div class="modal-footer">
             <div class="popup-footer">
               <button type="button" class="btn btn-primary"  aria-label="Close" (click)="this.hide()">
                 Cancel
               </button>
-              <button type="submit" class="btn btn-success" aria-label="Close" (click)="this.hide()">
+              <button type="submit" class="btn btn-success" aria-label="Close">
                 Create
               </button>
             </div>

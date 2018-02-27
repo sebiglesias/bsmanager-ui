@@ -18,11 +18,15 @@ export class BrandEditModalComponent implements OnInit {
 
   brand: Brand = {
     name: '',
-    infoURL: '',
+    infoUrl: '',
     observations: ''
   };
-  brandForm;
+  brandForm: FormGroup;
   users: User[] = [];
+  brands: Brand[];
+
+  invalidForm = false;
+  isNameTaken = false;
 
   @Output() updatedBrandAlert = new EventEmitter<boolean>();
 
@@ -32,14 +36,22 @@ export class BrandEditModalComponent implements OnInit {
 
   constructor(private brandService: BrandService) {
     this.brandForm = new FormGroup({
-      name: new FormControl(null, [Validators.required]),
-      infoURL: new FormControl(null, [Validators.required]),
+      name: new FormControl(null, [Validators.required, Validators.minLength(2)]),
+      infoUrl: new FormControl(null, [Validators.required]),
       observations: new FormControl(null, [Validators.required])
     });
   }
 
   ngOnInit() {
+    this.getBrands();
     this.loadedEmitter.next(this);
+  }
+
+  getBrands() {
+    this.brandService.getAllBrands().
+    subscribe( b => {
+      this.brands = b;
+    });
   }
 
   show() {
@@ -73,12 +85,29 @@ export class BrandEditModalComponent implements OnInit {
   editBrand() {
     const updatedBrand = this.brandForm.value;
     updatedBrand.id = this.brand.id;
-    this.brandService.updateBrand(updatedBrand).subscribe( () => this.throwAlert() );
-    this.hide();
+    if (this.brandForm.valid) {
+      this.invalidForm = false;
+      const a = this.brands.filter(b => {
+        return b.name === this.brandForm.value.name && updatedBrand.id !== b.id;
+      });
+      if (a.length > 0) {
+        this.invalidForm = true;
+        this.isNameTaken = true;
+        return;
+      } else {
+        this.isNameTaken = false;
+        this.brandService.updateBrand(updatedBrand).subscribe( () => this.throwAlert(true),
+          err => this.throwAlert(false));
+        this.getBrands();
+        this.hide();
+        return;
+      }
+    }
+    this.invalidForm = true;
   }
 
-  throwAlert() {
-    this.updatedBrandAlert.emit(true);
+  throwAlert(b: boolean) {
+    this.updatedBrandAlert.emit(b);
   }
 }
 

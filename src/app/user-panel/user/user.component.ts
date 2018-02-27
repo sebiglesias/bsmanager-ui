@@ -7,6 +7,8 @@ import {UserService} from '../user.service';
 import {UserCreateModalComponent} from '../user-create-modal/user-create-modal.component';
 import {UserDeleteModalComponent} from '../user-delete-modal/user-delete-modal.component';
 import {UserEditModalComponent} from '../user-edit-modal/user-edit-modal.component';
+import {UserResetModalComponent} from '../user-reset-modal/user-reset-modal.component';
+import {AuthService} from '../../auth/auth.service';
 
 @Component({
   selector: 'app-user',
@@ -16,6 +18,7 @@ import {UserEditModalComponent} from '../user-edit-modal/user-edit-modal.compone
 export class UserComponent implements OnInit {
 
   users: User[] = [];
+  currentUser: User;
 
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
@@ -23,10 +26,15 @@ export class UserComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject();
 
   @ViewChild('editUserModal') editModal: UserEditModalComponent;
+  @ViewChild('resetUserModal') resetUserModal: UserResetModalComponent;
   @ViewChild('deleteUserModal') deleteModal: UserDeleteModalComponent;
   @ViewChild('createUserModal') createModal: UserCreateModalComponent;
 
-  constructor(private userService: UserService, public toastr: ToastsManager, vcr: ViewContainerRef) {
+  constructor(private userService: UserService,
+              public toastr: ToastsManager,
+              vcr: ViewContainerRef,
+              private authService: AuthService
+  ) {
     this.toastr.setRootViewContainerRef(vcr);
   }
 
@@ -36,6 +44,7 @@ export class UserComponent implements OnInit {
       pagingType: 'full_numbers',
       pageLength: 10
     };
+    this.currentUser = this.authService.getCurrentUser();
   }
 
   getUsers(): void {
@@ -55,6 +64,11 @@ export class UserComponent implements OnInit {
   deleteRowOpenModal(group: User) {
     this.deleteModal.setUser(group);
     this.deleteModal.show();
+  }
+
+  resetRowOpenModal(group: User) {
+    this.resetUserModal.setUser(group);
+    this.resetUserModal.show();
   }
 
   createUserOpenModal() {
@@ -120,6 +134,12 @@ export class UserComponent implements OnInit {
     });
   }
 
+  getDate(a: any): string {
+    let birthday = JSON.parse(JSON.stringify(a));
+    birthday = new Date(birthday);
+    return birthday.getFullYear() + '-' + birthday.getMonth() + '-' + (birthday.getDay() + 1);
+  }
+
   deleteToast(deleted: boolean) {
     console.log('entre a deletedToast');
     if (deleted) {
@@ -144,6 +164,15 @@ export class UserComponent implements OnInit {
       this.toastr.success('Success!', 'The user was updated correctly.');
     } else {
       this.toastr.error('Couldn\'t update user!', 'There is something wrong with your connection.');
+    }
+  }
+
+  userResettedToast(updated: boolean) {
+    if (updated) {
+      this.toastr.success('The user should look in his email for steps on how to reset user\'s password',
+        'The user password was resetted correctly.');
+    } else {
+      this.toastr.error('Couldn\'t reset user\'s password!', 'There is something wrong with your connection.');
     }
   }
 

@@ -1,6 +1,7 @@
 export interface User {
   id?: number;
-  name: string;
+  firstname: string;
+  lastname: string;
   password: string;
   taxNum: string;
   address: string;
@@ -26,8 +27,8 @@ export interface Product {
   id?: number;
   code: string;
   name: string;
-  costAfterTax: number;
-  costBeforeTax: number;
+  cost: number;
+  price: number;
   infoUrl: string;
   longDescription: string;
   shortDescription: string;
@@ -48,7 +49,7 @@ export interface IndividualProduct {
 export interface Brand {
   id?: number;
   name: string;
-  infoURL: string;
+  infoUrl: string;
   observations: string;
 }
 
@@ -66,7 +67,11 @@ export interface Measure {
 
 export interface Order {
   id?: number;
-  user: User;
+  sale: boolean;
+  employee: string;
+  external: string;
+  payment: string;
+  items: number;
   date: Date;
   price: number;
 }
@@ -83,4 +88,11 @@ export interface StockXls {
   code: number;
   units: number;
   product: Product;
+}
+
+export enum PaymentOptions {
+  'CASH',
+  'DEBIT',
+  'CREDIT',
+  'BANK'
 }

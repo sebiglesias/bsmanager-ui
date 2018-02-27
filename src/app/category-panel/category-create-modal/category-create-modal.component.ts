@@ -20,7 +20,11 @@ export class CategoryCreateModalComponent implements OnInit {
     plural_name: '',
     singular_name: ''
   };
-  categoryForm;
+  categoryForm: FormGroup;
+  invalidForm = false;
+  categories: Category[] = [];
+  isPluralNameTaken = false;
+  isSingularNameTaken = false;
 
   @Output() createdCategoryAlert = new EventEmitter<boolean>();
 
@@ -36,6 +40,7 @@ export class CategoryCreateModalComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getCategories();
     this.loadedEmitter.next(this);
   }
 
@@ -67,14 +72,47 @@ export class CategoryCreateModalComponent implements OnInit {
     this.category = c;
   }
 
-  createCategory() {
-    console.log(this.categoryForm.value);
-    this.categoryService.createCategory(this.categoryForm.value).subscribe( () => this.throwAlert() );
-    this.hide();
+  getCategories() {
+    this.categoryService.getAllCategories().
+    subscribe( b => {
+      this.categories = b;
+    });
   }
 
-  throwAlert() {
-    this.createdCategoryAlert.emit(true);
+  createCategory() {
+    const result = this.categoryForm.value;
+    if (this.categoryForm.valid) {
+      this.isSingularNameTaken = false;
+      this.isPluralNameTaken = false;
+      this.invalidForm = false;
+      const a = this.categories.filter(c => {
+        if ( c.plural_name === result.plural_name) {
+          this.isPluralNameTaken = true;
+        }
+        if (c.singular_name === result.singular_name) {
+          this.isSingularNameTaken = true;
+        }
+        return this.isPluralNameTaken || this.isSingularNameTaken;
+      });
+      if (a.length > 0) {
+        this.invalidForm = true;
+        return;
+      } else {
+        this.isPluralNameTaken = false;
+        this.isSingularNameTaken = false;
+        this.categoryService.createCategory(result).subscribe(
+          () => this.throwAlert(true),
+          err => this.throwAlert(false));
+        this.hide();
+        this.getCategories();
+        return;
+      }
+    }
+    this.invalidForm = true;
+  }
+
+  throwAlert(b: boolean) {
+    this.createdCategoryAlert.emit(b);
   }
 }
 

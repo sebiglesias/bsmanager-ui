@@ -1,26 +1,47 @@
 <div class="container">
   <div class="card">
     <div class="card-header">
-      <h4 class="card-title">Profile</h4>
+      <h3 class="card-title">Profile</h3>
     </div>
     <form [formGroup]="userForm" (ngSubmit)="updateUser()">
       <div class="card-body">
         <div class="form-row">
           <div class="col">
             <div class="form-group">
-              <label for="name">User name</label>
+              <label for="firstname">User firstname</label>
               <input
-                placeholder="Choose a user name"
-                id="name"
+                placeholder="Choose a user firstname"
+                id="firstname"
                 type="text"
                 class="form-control"
                 data-length="20"
                 required
-                name="name"
-                [(ngModel)]="user.name"
-                formControlName="name"
-                value="user.name"
+                name="firstname"
+                [(ngModel)]="user.firstname"
+                formControlName="firstname"
+                value="user.firstname"
               >
+              <div *ngIf="invalidForm && !userForm.controls['firstname'].valid" class="alert alert-danger">
+                Please make sure you put at least a 2 character long firstname.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="lastname">User lastname</label>
+              <input
+                placeholder="Choose a user lastname"
+                id="lastname"
+                type="text"
+                class="form-control"
+                data-length="20"
+                required
+                name="lastname"
+                [(ngModel)]="user.lastname"
+                formControlName="lastname"
+                value="user.lastname"
+              >
+              <div *ngIf="invalidForm && !userForm.controls['lastname'].valid" class="alert alert-danger">
+                Please make sure you put at least a 2 character long lastname.
+              </div>
             </div>
             <div class="form-group">
               <label for="telephone">Telephone</label>
@@ -36,6 +57,9 @@
                 formControlName="telephone"
                 value="user.telephone"
               >
+              <div *ngIf="invalidForm && !userForm.controls['telephone'].valid" class="alert alert-danger">
+                A valid telephone is required
+              </div>
             </div>
             <div class="form-group">
               <label for="address">Address</label>
@@ -51,6 +75,9 @@
                 formControlName="address"
                 value="user.address"
               >
+              <div *ngIf="invalidForm && !userForm.controls['address'].valid" class="alert alert-danger">
+                A valid address is required.
+              </div>
             </div>
           </div>
           <div class="col">
@@ -65,6 +92,9 @@
                 formControlName="birthday"
                 value="user.birthday"
               ></my-date-picker>
+              <div *ngIf="invalidForm && !userForm.controls['birthday'].valid" class="alert alert-danger">
+                A birthday is required.
+              </div>
             </div>
             <div class="form-group">
               <label for="email">Email</label>
@@ -80,6 +110,9 @@
                 formControlName="email"
                 value="user.email"
               >
+              <div *ngIf="invalidForm && !userForm.controls['email'].valid" class="alert alert-danger">
+                A valid email is required.
+              </div>
             </div>
             <div class="form-group">
               <label for="taxNum">Tax paying number</label>
@@ -95,12 +128,29 @@
                 formControlName="taxNum"
                 value="user.taxNum"
               >
+              <div *ngIf="invalidForm && !userForm.controls['taxNum'].valid" class="alert alert-danger">
+                A valid tax payer number is required.
+              </div>
             </div>
           </div>
         </div>
+      </div>
+      <div class="card-footer">
+        <button type="submit" class="btn btn-success">
+          Update information
+        </button>
+      </div>
+    </form>
+  </div>
+  <br>
+  <div class="card">
+    <div class="card-header">
+      <h3>Change password</h3>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="passwordForm">
         <div class="form-row">
           <div class="col">
-            <h3>Change Password</h3>
             <div class="form-group">
               <label for="password">New Password</label>
               <input
@@ -112,6 +162,9 @@
                 name="password"
                 formControlName="password"
               >
+            </div>
+            <div *ngIf="invalidPasswordForm && !passwordForm.controls['password'].valid" class="alert alert-danger">
+              Fill this field!
             </div>
             <div class="form-group">
               <label for="confirmPassword">Re-enter New Password</label>
@@ -125,14 +178,20 @@
                 formControlName="confirmPassword"
               >
             </div>
+            <div *ngIf="invalidPasswordForm && !passwordForm.controls['password'].valid" class="alert alert-danger">
+              Fill this field!
+            </div>
+            <div *ngIf="invalidPasswordForm && isPasswordDifferent" class="alert alert-danger">
+              Passwords do not match.
+            </div>
           </div>
-        </div>
       </div>
-      <div class="card-footer">
-        <button type="submit" class="btn btn-success">
-          Update
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
+    <div class="card-footer">
+      <button type="submit" class="btn btn-success" (click)="changePassword()">
+        Change password
+      </button>
+    </div>
   </div>
 </div>

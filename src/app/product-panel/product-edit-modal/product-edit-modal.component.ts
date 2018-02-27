@@ -22,8 +22,8 @@ export class ProductEditModalComponent implements OnInit {
   product: Product = {
     code: '',
     name: '',
-    costAfterTax: 0,
-    costBeforeTax: 0,
+    cost: 0,
+    price: 0,
     infoUrl: '',
     longDescription: '',
     shortDescription: '',
@@ -31,7 +31,7 @@ export class ProductEditModalComponent implements OnInit {
     series: '',
     brand: {
       name: '',
-      infoURL: '',
+      infoUrl: '',
       observations: ''
     },
     categories: [{
@@ -52,6 +52,9 @@ export class ProductEditModalComponent implements OnInit {
   selectedCategories: Category[];
   selectedMeasure: Measure;
   selectedBrand: Brand;
+  invalidForm = false;
+  isCodeTaken = false;
+  products: Product[] = [];
 
   @Output() updatedProductAlert = new EventEmitter<boolean>();
 
@@ -68,8 +71,8 @@ export class ProductEditModalComponent implements OnInit {
     this.productForm = new FormGroup({
       code: new FormControl(null, [Validators.required]),
       name: new FormControl(null, [Validators.required]),
-      costAfterTax: new FormControl(null, [Validators.required]),
-      costBeforeTax: new FormControl(null, [Validators.required]),
+      cost: new FormControl(null, [Validators.required]),
+      price: new FormControl(null, [Validators.required]),
       infoUrl: new FormControl(null, [Validators.required]),
       longDescription: new FormControl(null, [Validators.required]),
       shortDescription: new FormControl(null, [Validators.required]),
@@ -86,7 +89,14 @@ export class ProductEditModalComponent implements OnInit {
     this.getBrands();
     this.getCategories();
     this.getMeasures();
+    this.getProducts();
     this.loadedEmitter.next(this);
+  }
+
+  getProducts() {
+    this.productService.getAllProducts().subscribe( p => {
+      this.products = p;
+    });
   }
 
   show() {
@@ -134,12 +144,35 @@ export class ProductEditModalComponent implements OnInit {
     updatedProduct.categories = this.selectedCategories;
     updatedProduct.brand = this.selectedBrand;
     updatedProduct.measure = this.selectedMeasure;
-    this.productService.updateProduct(updatedProduct).subscribe( () => this.throwAlert() );
-    this.hide();
+
+    if (this.productForm.valid) {
+      this.isCodeTaken = false;
+      this.invalidForm = false;
+      const a = this.products.filter(c => {
+        if ( c.code === updatedProduct.code) {
+          this.isCodeTaken = true;
+        }
+        return this.isCodeTaken;
+      });
+      if (a.length > 0 || this.isCodeTaken) {
+        this.invalidForm = true;
+        return;
+      } else {
+        this.isCodeTaken = false;
+        this.productService.updateProduct(updatedProduct).subscribe(
+          () => this.throwAlert(true),
+          err => this.throwAlert(false)
+        );
+        this.hide();
+        this.getProducts();
+        return;
+      }
+    }
+    this.invalidForm = true;
   }
 
-  throwAlert() {
-    this.updatedProductAlert.emit(true);
+  throwAlert(b: boolean) {
+    this.updatedProductAlert.emit(b);
   }
 
   getCategories() {

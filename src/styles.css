@@ -14,3 +14,7 @@ body {
   color: red !important;
   font-size: small !important;
 }
+
+.img-fluid {
+  width: 100% \9;
+}

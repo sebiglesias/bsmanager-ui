@@ -1,11 +1,13 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewContainerRef} from '@angular/core';
-import {Order, OrderDetail} from '../../models';
+import {Order, OrderDetail, Product} from '../../models';
 import {
    ModalResult
 } from '../../product-panel/product-delete-modal/product-delete-modal.component';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {SalesService} from '../sales.service';
 import {ToastsManager} from 'ng2-toastr';
+import {ProductService} from '../../product-panel/product.service';
+import {UserService} from '../../user-panel/user.service';
 
 @Component({
   selector: 'app-sales-checkout-modal',
@@ -20,6 +22,7 @@ export class SalesCheckoutModalComponent implements OnInit {
   @Input('positiveLabel') positiveLabel: string;
 
   @Output() checkoutSalesAlert = new EventEmitter<boolean>();
+  @Output() productModifiedAlert = new EventEmitter<boolean>();
 
   @Output('closed') closeEmitter: EventEmitter < ModalResult > = new EventEmitter < ModalResult > ();
   @Output('loaded') loadedEmitter: EventEmitter < SalesCheckoutModalComponent > = new EventEmitter < SalesCheckoutModalComponent > ();
@@ -31,22 +34,30 @@ export class SalesCheckoutModalComponent implements OnInit {
   secondFormGroup: FormGroup;
   totalItems = 0;
   totalPrice = 0;
-  paymentOptions: string[]= ['CASH', 'DEBIT', 'CREDIT'];
+  external: string;
+  paymentMethod: string;
+  paymentOptions: string[]= ['CASH', 'DEBIT', 'CREDIT', 'BANK'];
+  invalidForm = false;
+  invalidSecondForm = false;
   constructor(
     private _formBuilder: FormBuilder,
     private saleService: SalesService,
+    private productService: ProductService,
     public toastr: ToastsManager,
-    vcr: ViewContainerRef
-  ) { }
+    vcr: ViewContainerRef,
+    private userService: UserService
+  ) {
+    toastr.setRootViewContainerRef(vcr);
+  }
 
 
   ngOnInit() {
-    this.firstFormGroup = this._formBuilder.group({
-      firstCtrl: ['', Validators.required]
+    this.firstFormGroup = new FormGroup({
+      firstCtrl: new FormControl('', Validators.requiredTrue)
     });
-    this.secondFormGroup = this._formBuilder.group({
-      email: ['', Validators.required],
-      payment: ['', Validators.required]
+    this.secondFormGroup = new FormGroup({
+      external: new FormControl('', [Validators.required, Validators.email]),
+      payment: new FormControl('', Validators.required)
     });
     this.loadedEmitter.next(this);
   }
@@ -75,8 +86,8 @@ export class SalesCheckoutModalComponent implements OnInit {
     return false;
   }
 
-  throwAlert() {
-    this.checkoutSalesAlert.emit(true);
+  throwAlert(b: boolean) {
+    this.checkoutSalesAlert.emit(b);
   }
 
   setOrder(order: Order) {
@@ -96,17 +107,52 @@ export class SalesCheckoutModalComponent implements OnInit {
   }
 
   createOrder() {
+    this.order.payment = this.secondFormGroup.value.payment;
+    this.order.external = this.secondFormGroup.value.external;
     this.saleService.createOrder(this.order).subscribe(
       smt => {
         this.orderDetails.forEach( oDetail => {
           oDetail.order = smt;
-          this.saleService.createOrderDetail(oDetail);
+          delete oDetail['product']['@product'];
+          this.saleService.createOrderDetail(oDetail).subscribe( () => {
+            const p: Product = oDetail.product;
+            p.quantity = p.quantity - oDetail.quantity;
+            this.productService.updateProduct(p).subscribe( pro => {
+              this.throwProdAlert(true);
+            }, error2 => this.throwProdAlert(false));
+          });
         });
-        this.throwAlert();
+        this.throwAlert(true);
+        this.hide();
+        this.sendTicketMail(smt);
     }, err =>
-        console.log(err),
-      () =>
-        console.log('finished'));
+        this.throwAlert(false));
+  }
+
+  addPayment(s: string) {
+    this.paymentMethod = s;
+  }
+
+  throwProdAlert(b: boolean) {
+    this.productModifiedAlert.emit(b);
+  }
+
+  sendTicketMail(o: Order) {
+    const to = o.external;
+    const subject = 'Your ticket';
+    let s = '';
+    this.orderDetails.filter( od => {
+      return od.order.id === o.id;
+    }).forEach( orderDetail => {
+      s = s + '\n ' +
+        'Product: ' + orderDetail.product.name +
+        ' Quantity: ' + orderDetail.quantity +
+        ' Price: ' + orderDetail.price;
+    });
+    const content = 'Your order #' + o.id +
+      '\n' +
+      'You bought the following: \n \n \n' + s;
+    this.userService.sendMail(to, subject, content, '');
   }
 }
 export enum ModalAction { POSITIVE, CANCEL }

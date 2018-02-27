@@ -1,10 +1,12 @@
 import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {ProductService} from '../../product-panel/product.service';
-import {OrderDetail, Product, Order} from '../../models';
+import {OrderDetail, Product, Order, Brand, Category} from '../../models';
 import {ProductDetailModalComponent} from '../../product-panel/product-detail-modal/product-detail-modal.component';
 import {AuthService} from '../../auth/auth.service';
 import {SalesCheckoutModalComponent} from '../sales-checkout-modal/sales-checkout-modal.component';
 import {ToastsManager} from 'ng2-toastr';
+import {BrandService} from '../../brand-panel/brand.service';
+import {CategoryService} from '../../category-panel/category.service';
 
 @Component({
   selector: 'app-pos',
@@ -17,14 +19,28 @@ export class PosComponent implements OnInit {
   orderDetails: OrderDetail[] = [];
   products: Product[] = [];
   filteredProducts: Product[] = [];
+  currentUserMail: string;
   list = true;
   totalPrice = 0;
   totalItems = 0;
+  fBrand: Brand;
+  fCategory: Category;
+  reverse = false;
+  itemsPerPage = 10;
+  productFilter: any = {
+    name: ''
+  };
   @ViewChild('detailProductModal') detailModal: ProductDetailModalComponent;
   @ViewChild('checkoutSalesModal') checkoutModal: SalesCheckoutModalComponent;
+  brands: Brand[] = [];
+  categories: Category[] = [];
+  page = 1;
+  orderBy: 'name';
 
   constructor(private productService: ProductService,
               private authService: AuthService,
+              private brandService: BrandService,
+              private categoryService: CategoryService,
               public toastr: ToastsManager,
               vcr: ViewContainerRef
   ) {
@@ -33,12 +49,48 @@ export class PosComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.currentUserMail = this.authService.getCurrentUser().email;
     this.getProducts();
+    this.getBrands();
+    this.getCategories();
   }
 
 
   setList(l: boolean) {
     this.list = l;
+  }
+
+  filterBrand(b: number) {
+    if (b === undefined || b === null || Number(b) === -1) {
+      this.fBrand = undefined;
+      this.reFilter();
+    } else {
+      this.brandService.getBrandById(b).subscribe( b => {
+        this.fBrand = b;
+        this.reFilter();
+      });
+    }
+  }
+  filterCategory(c: number) {
+    if ( c === undefined || c === null || Number(c) === -1) {
+      this.fCategory = undefined;
+      this.reFilter();
+    } else {
+      this.categoryService.getCategoryByName(c).subscribe( cat => {
+        this.fCategory = cat;
+        this.reFilter();
+      });
+    }
+  }
+
+  reFilter() {
+    this.filteredProducts = this.products.filter( prod => {
+      const matchesBrand = (this.fBrand === undefined) || (prod.brand !== null && (prod.brand.id === this.fBrand.id));
+      const matchesCategory = (this.fCategory === undefined) || (prod.categories !== null && (prod.categories.filter( cat => {
+        return cat.id === this.fCategory.id;
+      }).length > 0));
+      return matchesBrand && matchesCategory;
+    });
   }
 
   detailProductOpenModal(prod: Product) {
@@ -51,6 +103,7 @@ export class PosComponent implements OnInit {
       .getAllProducts()
       .subscribe(products => {
         this.products = products;
+        this.reFilter();
       });
   }
 
@@ -69,7 +122,7 @@ export class PosComponent implements OnInit {
     return {
       order: this.order,
       product: p,
-      price: p.costAfterTax,
+      price: p.price,
       quantity: 1
     };
   }
@@ -104,7 +157,11 @@ export class PosComponent implements OnInit {
   private makeNewOrder(): Order {
     return {
       date: new Date(),
-      user: this.authService.getCurrentUser(),
+      employee: this.currentUserMail,
+      external: '',
+      sale: true,
+      payment: '',
+      items: 0,
       price: 0
     };
   }
@@ -112,7 +169,7 @@ export class PosComponent implements OnInit {
   calculateTotal() {
     let auxTotal = 0;
     this.orderDetails.forEach( oDetail => {
-      auxTotal += oDetail.product.costAfterTax * oDetail.quantity;
+      auxTotal += oDetail.product.price * oDetail.quantity;
     });
     this.totalPrice = auxTotal;
   }
@@ -146,7 +203,7 @@ export class PosComponent implements OnInit {
 
   addItem(p: Product) {
     this.orderDetails = this.orderDetails.map( orderD => {
-      if (orderD.product.id === p.id) {
+      if (orderD.product.id === p.id && orderD.product.quantity > orderD.quantity) {
         orderD.quantity = orderD.quantity + 1;
         this.calculateResults();
         return orderD;
@@ -164,6 +221,7 @@ export class PosComponent implements OnInit {
   openCheckout(order: Order, orderDetails: OrderDetail[], items: number, price: number) {
     this.calculateResults();
     order.price = price;
+    order.items = items;
     this.checkoutModal.setOrder(order);
     this.checkoutModal.setDetails(orderDetails);
     this.checkoutModal.setItems(items);
@@ -178,11 +236,33 @@ export class PosComponent implements OnInit {
     this.checkoutToast(b);
   }
 
+  productModifiedAlert(b: boolean) {
+    if (b) {
+      this.getProducts();
+    }
+  }
+
   checkoutToast(created: boolean) {
     if (created) {
       this.toastr.success('Success!', 'The order was created correctly.');
     } else {
       this.toastr.error('Couldn\'t created order!', 'There is something wrong with your connection.');
     }
+  }
+
+  setReverse() {
+    this.reverse = !this.reverse;
+  }
+
+  getBrands() {
+    this.brandService.getAllBrands().subscribe(
+      b => this.brands = b
+    );
+  }
+
+  getCategories() {
+    this.categoryService.getAllCategories().subscribe(
+      c => this.categories = c
+    );
   }
 }

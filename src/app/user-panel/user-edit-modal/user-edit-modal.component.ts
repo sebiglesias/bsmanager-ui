@@ -18,7 +18,8 @@ export class UserEditModalComponent implements OnInit {
 
   user: User = {
     password: '',
-    name: '',
+    firstname: '',
+    lastname: '',
     taxNum: '',
     address: '',
     birthday: new Date(),
@@ -26,8 +27,10 @@ export class UserEditModalComponent implements OnInit {
     telephone: '',
     admin: false
   };
-  userForm;
+  userForm: FormGroup;
   users: User[] = [];
+  invalidForm = false;
+  isEmailTaken = false;
 
   @Output() updatedUserAlert = new EventEmitter<boolean>();
 
@@ -41,14 +44,27 @@ export class UserEditModalComponent implements OnInit {
       taxNum: new FormControl(null, [Validators.required]),
       address: new FormControl(null, [Validators.required]),
       birthday: new FormControl(null, [Validators.required]),
-      email: new FormControl(null, [Validators.required]),
+      email: new FormControl(null, [Validators.required, Validators.email]),
       telephone: new FormControl(null, [Validators.required]),
       admin: new FormControl(null, [Validators.required])
     });
   }
 
   ngOnInit() {
+    this.getUsers();
     this.loadedEmitter.next(this);
+    this.setDate();
+  }
+
+  setDate(): void {
+    // Set today date using the patchValue function
+    const date = new Date(this.user.birthday);
+    this.userForm.patchValue({birthday: {
+        date: {
+          year: date.getFullYear(),
+          month: date.getMonth() + 1,
+          day: date.getDate()}
+      }});
   }
 
   show() {
@@ -80,14 +96,42 @@ export class UserEditModalComponent implements OnInit {
   }
 
   editUser() {
-    const updatedUser = this.userForm.value;
-    updatedUser.id = this.user.id;
-    this.userService.updateUser(updatedUser).subscribe( () => this.throwAlert() );
-    this.hide();
+    const result = this.userForm.value;
+    result.id = this.user.id;
+    if (this.userForm.valid) {
+      this.isEmailTaken = false;
+      this.invalidForm = false;
+      const a = this.users.filter(c => {
+        if ( c.email === result.email && c.id !== result.id) {
+          this.isEmailTaken = true;
+        }
+        return this.isEmailTaken;
+      });
+      if (a.length > 0) {
+        this.invalidForm = true;
+        return;
+      } else {
+        this.isEmailTaken = false;
+        this.userService.updateUser(result).subscribe( () => this.throwAlert(true), err => this.throwAlert(false) );
+        this.hide();
+        this.getUsers();
+        return;
+      }
+    }
+    this.invalidForm = true;
   }
 
-  throwAlert() {
-    this.updatedUserAlert.emit(true);
+  throwAlert(b: boolean) {
+    this.updatedUserAlert.emit(b);
+  }
+
+  getUsers() {
+    this.userService.getAllUsers().subscribe( u => this.users=u);
+  }
+  getDate(a: any): string {
+    let birthday = JSON.parse(JSON.stringify(a));
+    birthday = new Date(birthday);
+    return birthday.getFullYear() + '-' + birthday.getMonth() + '-' + (birthday.getDay() + 1);
   }
 }
 

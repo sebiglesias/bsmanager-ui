@@ -22,8 +22,8 @@ export class ProductDetailModalComponent implements OnInit {
   product: Product = {
     code: '',
     name: '',
-    costAfterTax: 0,
-    costBeforeTax: 0,
+    cost: 0,
+    price: 0,
     infoUrl: '',
     longDescription: '',
     shortDescription: '',
@@ -31,7 +31,7 @@ export class ProductDetailModalComponent implements OnInit {
     series: '',
     brand: {
       name: '',
-      infoURL: '',
+      infoUrl: '',
       observations: ''
     },
     categories: [{
@@ -67,8 +67,8 @@ export class ProductDetailModalComponent implements OnInit {
     this.productForm = new FormGroup({
       code: new FormControl(null, [Validators.required]),
       name: new FormControl(null, [Validators.required]),
-      costAfterTax: new FormControl(null, [Validators.required]),
-      costBeforeTax: new FormControl(null, [Validators.required]),
+      cost: new FormControl(null, [Validators.required]),
+      price: new FormControl(null, [Validators.required]),
       infoUrl: new FormControl(null, [Validators.required]),
       longDescription: new FormControl(null, [Validators.required]),
       shortDescription: new FormControl(null, [Validators.required]),

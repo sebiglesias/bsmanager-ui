@@ -8,20 +8,23 @@
       </div>
       <div class="modal-body">
         <ng-content></ng-content>
-        <mat-horizontal-stepper [linear]="false" #stepper="matHorizontalStepper">
+        <mat-horizontal-stepper [linear]="true" #stepper="matHorizontalStepper">
           <mat-step [stepControl]="firstFormGroup">
             <form [formGroup]="firstFormGroup">
               <ng-template matStepLabel>Check the order</ng-template>
               <div class="form-group">
                 <ul class="list-group">
                   <li class="list-group-item" *ngFor="let detail of orderDetails">
-                    {{detail.product.name}} <b>Amount:</b> {{detail.quantity}} <b>Price:</b> {{detail.quantity * detail.product.costAfterTax}}
+                    {{detail.product.name}} <b>Amount:</b> {{detail.quantity}} <b>Price:</b> {{detail.quantity * detail.product.price}}
                   </li>
                 </ul>
                 <br>
                 <p><b>Total items:</b> {{totalItems}} <b>Total price:</b> {{totalPrice}}</p>
                 <label for="firstCheck">I agree with the information above</label>
                 <input id="firstCheck" type="checkbox" formControlName="firstCtrl" required>
+                <div *ngIf="!firstFormGroup.controls['firstCtrl'].valid" class="alert alert-danger">
+                  You need to check this box in order to continue with checkout.
+                </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-warning"  aria-label="Close" (click)="this.hide()">
@@ -37,16 +40,25 @@
             <form [formGroup]="secondFormGroup">
               <ng-template matStepLabel>Fill out customer info</ng-template>
               <div class="form-group">
-                <label for="email">Customer's email</label>
-                <input class="form-control" id="email" type="email" formControlName="email">
-                <label for="paymentOption">Choose a Payment option</label>
-                <select id="paymentOption" class="custom-select" formControlName="payment">
+                <label for="external">Customer's email</label>
+                <input class="form-control" id="external" type="external" formControlName="external">
+              </div>
+              <div *ngIf="!secondFormGroup.controls['external'].valid" class="alert alert-danger">
+                Please add a valid email.
+              </div>
+              <div class="form-group">
+                <label for="payment">Choose a Payment option</label>
+                <select id="payment" class="custom-select" formControlName="payment" (change)="addPayment($event.target.value)">
                   <option *ngFor="let p of paymentOptions" value="{{p}}" required>{{p}}</option>
                 </select>
+                <div *ngIf="!secondFormGroup.controls['payment'].valid" class="alert alert-danger">
+                  Please select a valid payment method.
+                </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-warning" matStepperPrevious>Back</button>
-                <button type="button" class="btn btn-success" matStepperNext>Next</button>
+                <button type="button" class="btn btn-success" matStepperNext>
+                  <a>Next</a></button>
               </div>
             </form>
           </mat-step>
@@ -60,7 +72,7 @@
                 <h5 class="card-title">Total: {{totalPrice}} $</h5>
                 <p class="card-text">Customer is paying with {{secondFormGroup.value.payment}}</p>
                 <li class="list-group-item" *ngFor="let detail of orderDetails">
-                  {{detail.product.name}} <b>Amount:</b> {{detail.quantity}} <b>Price:</b> {{detail.quantity * detail.product.costAfterTax}}
+                  {{detail.product.name}} <b>Amount:</b> {{detail.quantity}} <b>Price:</b> {{detail.quantity * detail.product.price}}
                 </li>
               </div>
             </div>
@@ -68,8 +80,8 @@
               <button type="button" class="btn btn-warning"  aria-label="Close" (click)="this.hide()">
                 Cancel
               </button>
-              <button type="button" class="btn btn-success" (click)="createOrder(); this.hide();">
-                Finish
+              <button type="button" class="btn btn-success">
+                <a (click)="createOrder()">Finish</a>
               </button>
             </div>
           </mat-step>

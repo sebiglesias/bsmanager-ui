@@ -21,7 +21,11 @@ export class MeasureCreateModalComponent implements OnInit {
     name: '',
     abbreviation: ''
   };
-  measureForm;
+  measureForm: FormGroup;
+  invalidForm = false;
+  isNameTaken = false;
+  isAbbreviationTaken = false;
+  measures: Measure[] = [];
 
   @Output() createdMeasureAlert = new EventEmitter<boolean>();
 
@@ -29,7 +33,7 @@ export class MeasureCreateModalComponent implements OnInit {
   @Output('loaded') loadedEmitter: EventEmitter < MeasureCreateModalComponent > = new EventEmitter < MeasureCreateModalComponent > ();
   @Output() positiveLabelAction = new EventEmitter();
 
-  constructor(private measureService: MeasureService, private userService: UserService) {
+  constructor(private measureService: MeasureService) {
     this.measureForm = new FormGroup({
       name: new FormControl(null, [Validators.required]),
       abbreviation: new FormControl(null, [Validators.required])
@@ -37,6 +41,7 @@ export class MeasureCreateModalComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getMeasures();
     this.loadedEmitter.next(this);
   }
 
@@ -64,17 +69,48 @@ export class MeasureCreateModalComponent implements OnInit {
     return false;
   }
 
-  setMeasure(g: Measure) {
-    this.measure = g;
-  }
-
   createMeasure() {
-    this.measureService.createMeasure(this.measureForm.value).subscribe( () => this.throwAlert() );
-    this.hide();
+    const result = this.measureForm.value;
+    if (this.measureForm.valid) {
+      this.isNameTaken = false;
+      this.isAbbreviationTaken = false;
+      this.invalidForm = false;
+      const a = this.measures.filter(c => {
+        if ( c.name === result.name) {
+          this.isNameTaken = true;
+        }
+        if (c.abbreviation === result.abbreviation) {
+          this.isAbbreviationTaken = true;
+        }
+        return this.isNameTaken || this.isAbbreviationTaken;
+      });
+      if (a.length > 0) {
+        this.invalidForm = true;
+        return;
+      } else {
+        this.isNameTaken = false;
+        this.isAbbreviationTaken = false;
+        this.measureService.createMeasure(result).subscribe(
+          () => this.throwAlert(true),
+          err => {
+            console.log(err);
+            this.throwAlert(false);
+          });
+        this.hide();
+        this.getMeasures();
+        return;
+      }
+    }
+    this.invalidForm = true;
   }
 
-  throwAlert() {
-    this.createdMeasureAlert.emit(true);
+  throwAlert(b: boolean) {
+    this.createdMeasureAlert.emit(b);
+  }
+
+  getMeasures() {
+    this.measureService.getAllMeasures().
+      subscribe( m => this.measures = m);
   }
 }
 

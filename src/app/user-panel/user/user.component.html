@@ -11,12 +11,15 @@
   <app-user-edit-modal #editUserModal id="editUser" [showModal]="isEditModalOpen" [title]="'Edit User'" (updatedUserAlert)="updatedUserAlert($event)"></app-user-edit-modal>
   <!-- Delete Modal -->
   <app-user-delete-modal #deleteUserModal id="deleteUser" [showModal]="isDeleteModalOpen" [title]="'Delete User'" (deletedUserAlert)="deletedUserAlert($event)"></app-user-delete-modal>
+  <!-- Reset Modal -->
+  <app-user-reset-modal #resetUserModal id="resetUser" [showModal]="isResetModalOpen" [title]="'Reset User\'s Password'" (ressetedUserAlert)="resettedUserAlert($event)"></app-user-reset-modal>
 
   <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
     <thead>
     <tr>
       <th>ID</th>
-      <th>Name</th>
+      <th>Firstname</th>
+      <th>Lastname</th>
       <th>Tax payer #</th>
       <th>Address</th>
       <th>Birthday</th>
@@ -29,17 +32,19 @@
     <tbody>
     <tr *ngFor="let user of users">
       <td>{{user.id}}</td>
-      <td>{{user.name}}</td>
+      <td>{{user.firstname}}</td>
+      <td>{{user.lastname}}</td>
       <td>{{user.taxNum}}</td>
       <td>{{user.address}}</td>
-      <td>{{user.birthday}}</td>
+      <td>{{getDate(user.birthday)}}</td>
       <td>{{user.email}}</td>
       <td>{{user.telephone}}</td>
       <td>{{user.admin}}</td>
       <td>
         <div class="btn-group">
           <button type="button" class="btn btn-default btn" (click)="editRowOpenModal(user)"><i class="material-icons">edit</i></button>
-          <button type="button" class="btn btn-default btn" (click)="deleteRowOpenModal(user)"><i class="material-icons">delete</i></button>
+          <button type="button" class="btn btn-default btn" (click)="resetRowOpenModal(user)"><i class="material-icons">refresh</i></button>
+          <button *ngIf="user.id !== currentUser.id" type="button" class="btn btn-default btn" (click)="deleteRowOpenModal(user)"><i class="material-icons">delete</i></button>
         </div>
       </td>
     </tr>

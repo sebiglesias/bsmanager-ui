@@ -4,6 +4,8 @@ import {User} from '../../models';
 import {UserService} from '../user.service';
 import {IMyDpOptions} from 'mydatepicker/dist';
 import * as generator from 'generate-password';
+import * as cryptoRandomString from 'crypto-random-string';
+
 
 @Component({
   selector: 'app-user-create-modal',
@@ -20,7 +22,8 @@ export class UserCreateModalComponent implements OnInit {
 
   user: User = {
     password: '',
-    name: '',
+    firstname: '',
+    lastname: '',
     taxNum: '',
     address: '',
     birthday: new Date(),
@@ -30,6 +33,8 @@ export class UserCreateModalComponent implements OnInit {
   };
   userForm;
   users: User[] = [];
+  invalidForm = false;
+  isEmailTaken = false;
 
   public myDatePickerOptions: IMyDpOptions = {
     dateFormat: 'yyyy-mm-dd'
@@ -45,17 +50,19 @@ export class UserCreateModalComponent implements OnInit {
     private userService: UserService
   ) {
     this.userForm = new FormGroup({
-      name: new FormControl(null, [Validators.required]),
+      firstname: new FormControl(null, [Validators.required]),
+      lastname: new FormControl(null, [Validators.required]),
       taxNum: new FormControl(null, [Validators.required]),
       address: new FormControl(null, [Validators.required]),
       birthday: new FormControl(null, [Validators.required]),
-      email: new FormControl(null, [Validators.required]),
+      email: new FormControl(null, [Validators.required, Validators.email]),
       telephone: new FormControl(null, [Validators.required]),
       admin: new FormControl(null, [Validators.required])
     });
   }
 
   ngOnInit() {
+    this.getUsers();
     this.loadedEmitter.next(this);
   }
 
@@ -88,23 +95,65 @@ export class UserCreateModalComponent implements OnInit {
   }
 
   createUser() {
-    const user = this.userForm.value;
-    let birthday = this.userForm.value.birthday;
-    birthday = JSON.parse(JSON.stringify(birthday));
-    birthday = birthday.date.year + '-' + birthday.date.month + '-' + birthday.date.day;
-    user.birthday = birthday;
-    user.password = generator.generate({
-      length: 12,
-      numbers: true
-    });
-    this.userService.createUser(user).subscribe( () => {
-      this.throwAlert();
-    });
-    this.hide();
+    const result = this.userForm.value;
+    if (this.userForm.valid) {
+      this.isEmailTaken = false;
+      this.invalidForm = false;
+      const a = this.users.filter(c => {
+        if ( c.email === result.email) {
+          this.isEmailTaken = true;
+        }
+        return this.isEmailTaken;
+      });
+      if (a.length > 0) {
+        this.invalidForm = true;
+        return;
+      } else {
+        this.isEmailTaken = false;
+        const user = this.userForm.value;
+        let birthday = this.userForm.value.birthday;
+        birthday = JSON.parse(JSON.stringify(birthday));
+        birthday = birthday.date.year + '-' + birthday.date.month + '-' + birthday.date.day;
+        user.birthday = birthday;
+        user.password = this.randomPassword(20);
+        this.userService.createUser(user).subscribe( u => {
+          this.throwAlert(true);
+          this.sendLoginEmail(user);
+        }, err => this.throwAlert(false));
+        this.hide();
+        this.getUsers();
+        return;
+      }
+    }
+    this.invalidForm = true;
   }
 
-  throwAlert() {
-    this.createdUserAlert.emit(true);
+  throwAlert(b: boolean) {
+    this.createdUserAlert.emit(b);
+  }
+
+  private sendLoginEmail(u: User) {
+    const subject = 'Welcome to Business Manager ' + u.firstname + ' ' + u.lastname;
+    const content = 'To login in Business Manager please use the following credentials: \n' +
+      'Your username will be: ' + u.email + '\n' +
+    'Your password will be: ' + u.password + '\n' +
+      'Please login as soon as possible and change your password in the Profile Section \n Have a nice day!';
+    this.userService.sendMail(u.email, subject, content, '');
+  }
+
+  getUsers() {
+    this.userService.getAllUsers().subscribe(
+      u => this.users = u
+    );
+  }
+
+  randomPassword(length: number): string {
+    const chars = 'abcdefghijklmnopqrstuvwxyz!@#$%^&*()-+<>ABCDEFGHIJKLMNOP1234567890';
+    let pass = '';
+    for (let x = 0; x < length; x++) {
+      pass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return pass;
   }
 }
 

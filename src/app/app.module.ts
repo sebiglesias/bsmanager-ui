@@ -1,4 +1,3 @@
-// import {MaterializeModule} from 'angular2-materialize';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
@@ -51,7 +50,6 @@ import {ProductService} from './product-panel/product.service';
 import {ProductDeleteModalComponent} from './product-panel/product-delete-modal/product-delete-modal.component';
 import {ProductEditModalComponent} from './product-panel/product-edit-modal/product-edit-modal.component';
 import {MatGridListModule} from '@angular/material/grid-list';
-import { ShowErrorComponent } from './show-error/show-error.component';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { ProductDetailModalComponent } from './product-panel/product-detail-modal/product-detail-modal.component';
 import { ProductStockModalComponent } from './product-panel/product-stock-modal/product-stock-modal.component';
@@ -63,18 +61,25 @@ import { Ng2FilterPipeModule } from 'ng2-filter-pipe';
 import { Ng2OrderModule } from 'ng2-order-pipe';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { FileUploadModule } from 'ng2-file-upload';
+import { UserResetModalComponent } from './user-panel/user-reset-modal/user-reset-modal.component';
+import {AdminAuthService} from './auth/admin-auth.service';
+import { StockReportComponent } from './stock-panel/stock-report/stock-report.component';
+import { ReportComponent } from './report-panel/report/report.component';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatCardModule} from '@angular/material/card';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent, canActivate: [LoginService]},
-  {path: 'users', component: UserComponent, canActivate: [AuthGuard]},
+  {path: 'users', component: UserComponent, canActivate: [AdminAuthService]},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
-  {path: 'categories', component: CategoryComponent, canActivate: [AuthGuard]},
-  {path: 'brands', component: BrandComponent, canActivate: [AuthGuard]},
-  {path: 'sales', component: SalesReportComponent, canActivate: [AuthGuard]},
+  {path: 'categories', component: CategoryComponent, canActivate: [AdminAuthService]},
+  {path: 'brands', component: BrandComponent, canActivate: [AdminAuthService]},
+  {path: 'sales', component: ReportComponent, canActivate: [AdminAuthService]},
+  {path: 'stock', component: ReportComponent, canActivate: [AdminAuthService]},
   {path: 'pos', component: PosComponent, canActivate: [AuthGuard]},
   {path: 'products', component: ProductComponent, canActivate: [AuthGuard]},
-  {path: 'measures', component: MeasureComponent, canActivate: [AuthGuard]}
+  {path: 'measures', component: MeasureComponent, canActivate: [AdminAuthService]}
 ];
 
 @NgModule({
@@ -109,10 +114,12 @@ const appRoutes: Routes = [
     ProductCreateModalComponent,
     ProductEditModalComponent,
     ProductDeleteModalComponent,
-    ShowErrorComponent,
     ProductDetailModalComponent,
     ProductStockModalComponent,
     ProductImportModalComponent,
+    UserResetModalComponent,
+    StockReportComponent,
+    ReportComponent,
   ],
   imports: [
     // MaterializeModule,
@@ -139,7 +146,9 @@ const appRoutes: Routes = [
     Ng2FilterPipeModule,
     Ng2OrderModule,
     NgxPaginationModule,
-    FileUploadModule
+    FileUploadModule,
+    MatTabsModule,
+    MatCardModule
 ],
   providers: [
     CategoryService,
@@ -150,7 +159,8 @@ const appRoutes: Routes = [
     BrandService,
     MeasureService,
     ProductService,
-    SalesService
+    SalesService,
+    AdminAuthService
   ],
   bootstrap: [AppComponent]
 })

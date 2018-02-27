@@ -13,19 +13,40 @@
           <div class="form-row">
             <div class="col">
               <div class="form-group">
-                <label for="name">User name</label>
+                <label for="firstname">User firstname</label>
                 <input
-                  placeholder="Choose a user name"
-                  id="name"
+                  placeholder="Choose a user firstname"
+                  id="firstname"
                   type="text"
                   class="form-control"
                   data-length="20"
                   required
-                  name="name"
-                  [(ngModel)]="user.name"
-                  formControlName="name"
-                  value="user.name"
+                  name="firstname"
+                  [(ngModel)]="user.firstname"
+                  formControlName="firstname"
+                  value="user.firstname"
                 >
+                <div *ngIf="invalidForm && !userForm.controls['firstname'].valid" class="alert alert-danger">
+                  Please make sure you put at least a 2 character long firstname.
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="lastname">User lastname</label>
+                <input
+                  placeholder="Choose a user lastname"
+                  id="lastname"
+                  type="text"
+                  class="form-control"
+                  data-length="20"
+                  required
+                  name="lastname"
+                  [(ngModel)]="user.lastname"
+                  formControlName="lastname"
+                  value="user.lastname"
+                >
+                <div *ngIf="invalidForm && !userForm.controls['lastname'].valid" class="alert alert-danger">
+                  Please make sure you put at least a 2 character long lastname.
+                </div>
               </div>
               <div class="form-group">
                 <label for="taxNum">Tax Payer Numer</label>
@@ -34,13 +55,16 @@
                   id="taxNum"
                   type="text"
                   class="form-control"
-                  data-length="50"
+                  data-length="20"
                   required
                   name="taxNum"
                   [(ngModel)]="user.taxNum"
                   value="user.taxNum"
                   formControlName="taxNum"
                 >
+                <div *ngIf="invalidForm && !userForm.controls['taxNum'].valid" class="alert alert-danger">
+                  A valid tax payer number is required.
+                </div>
               </div>
               <div class="form-group">
                 <label for="address">Address</label>
@@ -55,6 +79,9 @@
                   value="user.address"
                   formControlName="address"
                 >
+                <div *ngIf="invalidForm && !userForm.controls['address'].valid" class="alert alert-danger">
+                  A valid address is required.
+                </div>
               </div>
             </div>
             <div class="col">
@@ -63,11 +90,14 @@
                 <my-date-picker
                   id="birthday"
                   [(ngModel)]="user.birthday"
-                  value="user.birthday"
+                  value="getDate(user.birthday)"
                   formControlName="birthday"
                   options="myDatePickerOptions"
                 >
                 </my-date-picker>
+                <div *ngIf="invalidForm && !userForm.controls['birthday'].valid" class="alert alert-danger">
+                  A birthday is required.
+                </div>
               </div>
               <div class="form-group">
                 <label for="email">Email</label>
@@ -83,6 +113,12 @@
                   value="user.email"
                   formControlName="email"
                 >
+                <div *ngIf="invalidForm && !userForm.controls['email'].valid" class="alert alert-danger">
+                  A valid email is required.
+                </div>
+                <div *ngIf="invalidForm && isEmailTaken" class="alert alert-danger">
+                  This email is taken.
+                </div>
               </div>
               <div class="form-group">
                 <label for="telephone">Telephone</label>
@@ -97,6 +133,9 @@
                   value="user.telephone"
                   formControlName="telephone"
                 >
+                <div *ngIf="invalidForm && !userForm.controls['telephone'].valid" class="alert alert-danger">
+                  A valid telephone is required.
+                </div>
               </div>
             </div>
           </div>
@@ -120,8 +159,8 @@
               <button type="button" class="btn btn-primary"  aria-label="Close" (click)="this.hide()">
                 Cancel
               </button>
-              <button type="submit" class="btn btn-success" aria-label="Close" (click)="this.hide()">
-                Create
+              <button type="submit" class="btn btn-success" aria-label="Close">
+                Update
               </button>
             </div>
           </div>

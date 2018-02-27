@@ -1,8 +1,10 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import {Product, StockXls} from '../../models';
+import {Order, OrderDetail, Product, StockXls} from '../../models';
 import {ProductService} from '../product.service';
 import * as XLSX from 'ts-xlsx';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AuthService} from '../../auth/auth.service';
+import {SalesService} from '../../sales-panel/sales.service';
 
 
 @Component({
@@ -17,6 +19,8 @@ export class ProductImportModalComponent implements OnInit {
   @Input('subtitle') subtitle: string;
   @Input('cancelLabel') cancelLabel: string;
   @Input('positiveLabel') positiveLabel: string;
+  order: Order;
+  orderDetails: OrderDetail[] = [];
   product: Product;
   arrayBuffer: any;
   file: File;
@@ -24,6 +28,17 @@ export class ProductImportModalComponent implements OnInit {
   secondFormGroup: FormGroup;
   uploadedProducts: StockXls[] = [];
   validProducts: StockXls[] = [];
+  currentUserMail: string;
+  external: string;
+  paymentMethod: string;
+  paymentOptions: string[]= ['DEBIT', 'CREDIT', 'BANK'];
+  totalPrice: number;
+  totalItems: number;
+  invalidFirstForm = false;
+  invalidSecondForm = false;
+  invalidThirdForm = false;
+  isFileInvalid = false;
+
   @Output() importedProductAlert = new EventEmitter<StockXls>();
 
   @Output('closed') closeEmitter: EventEmitter < ModalResult > = new EventEmitter < ModalResult > ();
@@ -32,16 +47,18 @@ export class ProductImportModalComponent implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private _formBuilder: FormBuilder
+    private authService: AuthService,
+    private salesService: SalesService
   ) {}
 
   ngOnInit() {
-    this.firstFormGroup = this._formBuilder.group({
-      firstCtrl: ['', Validators.required]
+    this.currentUserMail = this.authService.getCurrentUser().email;
+    this.firstFormGroup = new FormGroup({
+      external: new FormControl('', [Validators.required, Validators.email]),
+      payment: new FormControl('', Validators.required)
     });
-    this.secondFormGroup = this._formBuilder.group({
-      email: ['', Validators.required],
-      payment: ['', Validators.required]
+    this.secondFormGroup = new FormGroup({
+      approved: new FormControl('', Validators.requiredTrue)
     });
     this.loadedEmitter.next(this);
   }
@@ -74,8 +91,51 @@ export class ProductImportModalComponent implements OnInit {
     this.importedProductAlert.emit(p);
   }
 
+  private makeNewOrderDetail(p: Product): OrderDetail {
+    return {
+      order: this.order,
+      product: p,
+      price: p.price,
+      quantity: 1
+    };
+  }
+
+  private makeNewOrder(): Order {
+    return {
+      date: new Date(),
+      employee: this.currentUserMail,
+      external: '',
+      sale: true,
+      payment: '',
+      items: 0,
+      price: 0
+    };
+  }
+
+  calculateTotal() {
+    let auxTotal = 0;
+    this.orderDetails.forEach( oDetail => {
+      auxTotal += oDetail.product.price * oDetail.quantity;
+    });
+    this.totalPrice = auxTotal;
+  }
+
+  calculateItems() {
+    let auxQ = 0;
+    this.orderDetails.forEach( oDetail => {
+      auxQ += oDetail.quantity;
+    });
+    this.totalItems = auxQ;
+  }
+
+  private calculateResults() {
+    this.calculateItems();
+    this.calculateTotal();
+  }
+
   uploadData(event) {
     this.file = event.target.files[0];
+    this.isFileInvalid = false;
     this.uploadedProducts = [];
   }
 
@@ -105,25 +165,57 @@ export class ProductImportModalComponent implements OnInit {
         });
       });
     };
-    fileReader.readAsArrayBuffer(this.file);
+    if (this.file !== undefined) {
+      this.isFileInvalid = false;
+      this.invalidFirstForm = false;
+      fileReader.readAsArrayBuffer(this.file);
+    }else {
+      this.invalidFirstForm = true;
+      this.isFileInvalid = true;
+    }
   }
 
   sendUploadedProducts() {
-    this.validProducts.forEach( p => {
-      p.product.quantity += p.units;
-      this.productService.updateProduct(p.product).subscribe( r => {
-          this.throwAlert(p);
-        });
-    });
+    this.calculateResults();
+    this.order = this.makeNewOrder();
+    this.order.price = this.totalPrice;
+    this.order.items = this.totalItems;
+    this.order.employee = this.currentUserMail;
+    this.order.sale = false;
+    this.order.external = this.firstFormGroup.value.external;
+    this.order.payment = this.firstFormGroup.value.payment;
+    this.salesService.createOrder(this.order).subscribe( o => {
+      this.validProducts.forEach( p => {
+        const oDetail: OrderDetail = {
+          order: o,
+          product: p.product,
+          quantity: p.units,
+          price: p.product.price
+        };
+        delete oDetail['product']['@product'];
+        this.salesService.createOrderDetail(oDetail).subscribe( () => {
+          p.product.quantity += p.units;
+          this.productService.updateProduct(p.product).subscribe( r => {
+            this.throwAlert(p);
+          }, err => console.log(err));
+        }, err => console.log(err));
+      });
+    }, err => console.log(err));
     this.validProducts = [];
   }
 
   validateProducts() {
-    this.validProducts = this.uploadedProducts.filter( p => {
-      return p.product !== null;
-    }).filter( p => {
-      return p !== undefined;
-    });
+    const b: boolean = this.secondFormGroup.value.approved;
+    if (b) {
+      this.invalidSecondForm = false;
+      this.validProducts = this.uploadedProducts.filter( p => {
+        return p.product !== null;
+      }).filter( p => {
+        return p !== undefined;
+      });
+    } else {
+      this.invalidSecondForm = true;
+    }
   }
 }
 

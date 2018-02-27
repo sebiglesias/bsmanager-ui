@@ -23,8 +23,8 @@ export class ProductCreateModalComponent implements OnInit {
   product: Product = {
     code: '',
     name: '',
-    costAfterTax: 0,
-    costBeforeTax: 0,
+    cost: 0,
+    price: 0,
     infoUrl: '',
     longDescription: '',
     shortDescription: '',
@@ -32,7 +32,7 @@ export class ProductCreateModalComponent implements OnInit {
     series: '',
     brand: {
       name: '',
-      infoURL: '',
+      infoUrl: '',
       observations: ''
     },
     categories: [{
@@ -46,13 +46,15 @@ export class ProductCreateModalComponent implements OnInit {
     quantity: 0
   };
   productForm;
-  users: User[] = [];
   categories: Category[] = [];
   brands: Brand[] = [];
   measures: Measure[] = [];
   selectedCategories: Category[] = [];
   selectedBrand: Brand;
   selectedMeasure: Measure;
+  invalidForm = false;
+  isCodeTaken = false;
+  products: Product[] = [];
 
   @Output() createdProductAlert = new EventEmitter<boolean>();
 
@@ -67,9 +69,9 @@ export class ProductCreateModalComponent implements OnInit {
   ) {
     this.productForm = new FormGroup({
       code: new FormControl(null, [Validators.required]),
-      name: new FormControl(null, [Validators.required]),
-      costAfterTax: new FormControl(null, [Validators.required]),
-      costBeforeTax: new FormControl(null, [Validators.required]),
+      name: new FormControl(null, [Validators.required, Validators.minLength(2)]),
+      cost: new FormControl(null, [Validators.required, Validators.min(1)]),
+      price: new FormControl(null, [Validators.required, Validators.min(1)]),
       infoUrl: new FormControl(null, [Validators.required]),
       longDescription: new FormControl(null, [Validators.required]),
       shortDescription: new FormControl(null, [Validators.required]),
@@ -86,6 +88,7 @@ export class ProductCreateModalComponent implements OnInit {
     this.getCategories();
     this.getBrands();
     this.getMeasures();
+    this.getProducts();
     this.loadedEmitter.next(this);
   }
 
@@ -113,21 +116,40 @@ export class ProductCreateModalComponent implements OnInit {
     return false;
   }
 
-  setProduct(g: Product) {
-    this.product = g;
-  }
-
   createProduct() {
     const productToCreate: Product = this.productForm.value;
     productToCreate.categories = this.selectedCategories;
     productToCreate.brand = this.selectedBrand;
     productToCreate.measure = this.selectedMeasure;
-    this.productService.createProduct(this.productForm.value).subscribe( () => this.throwAlert() );
-    this.hide();
+    if (this.productForm.valid) {
+      this.isCodeTaken = false;
+      this.invalidForm = false;
+      const a = this.products.filter(c => {
+        if ( c.code === productToCreate.code) {
+          this.isCodeTaken = true;
+        }
+        return this.isCodeTaken;
+      });
+      if (a.length > 0 || this.isCodeTaken) {
+        this.invalidForm = true;
+        return;
+      } else {
+        this.isCodeTaken = false;
+        delete productToCreate['categories']['@category'];
+        this.productService.createProduct(productToCreate).subscribe(
+          () => this.throwAlert(true),
+          err => this.throwAlert(false)
+        );
+        this.hide();
+        this.getProducts();
+        return;
+      }
+    }
+    this.invalidForm = true;
   }
 
-  throwAlert() {
-    this.createdProductAlert.emit(true);
+  throwAlert(b: boolean) {
+    this.createdProductAlert.emit(b);
   }
 
   getCategories() {
@@ -161,8 +183,8 @@ export class ProductCreateModalComponent implements OnInit {
   }
 
   addMeasure(id: string) {
-    this.measureService.getMeasureById(Number(id)).subscribe( brand => {
-      this.selectedMeasure = brand;
+    this.measureService.getMeasureById(Number(id)).subscribe( measure => {
+      this.selectedMeasure = measure;
     });
   }
 
@@ -183,6 +205,12 @@ export class ProductCreateModalComponent implements OnInit {
     this.selectedCategories = this.selectedCategories.filter( group => {
       return group.id !== Number(id);
     });
+  }
+
+  getProducts() {
+    this.productService.getAllProducts().subscribe(
+      p => this.products = p
+    );
   }
 }
 

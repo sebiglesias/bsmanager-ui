@@ -58,12 +58,14 @@ export class ProductDeleteModalComponent implements OnInit {
   }
 
   deleteProduct(id: number) {
-    this.productService.deleteProductById(id).subscribe( () => this.throwAlert() );
+    this.productService.deleteProductById(id).subscribe( () => this.throwAlert(false), err => {
+      this.throwAlert(false);
+    } );
     this.hide();
   }
 
-  throwAlert() {
-    this.deletedProductAlert.emit(true);
+  throwAlert(b: boolean) {
+    this.deletedProductAlert.emit(b);
   }
 }
 

@@ -1,0 +1,29 @@
+<div class="modal-backdrop fade in" [style.display]="showModal ? 'block' : 'none'"></div>
+<div class="modal" tabindex="-1" role="dialog" style="display: block" [style.display]="showModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">{{title}}</span>
+        <i class="icon-cancel fr" data-dismiss="modal" aria-label="Close" (click)="cancelAction()"></i>
+        <p *ngIf="subTitle">{{subTitle}}</p>
+      </div>
+      <div class="modal-body">
+        <ng-content></ng-content>
+        <div class="popup-content">
+          <p>Are you sure you want to reset this user's password?</p>
+          <p>A new password will be sent to the user's email.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="popup-footer">
+          <button type="button" class="btn btn-primary"  aria-label="Close" (click)="this.hide()">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-danger" (click)="resetUser(this.user.id)" aria-label="Close">
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

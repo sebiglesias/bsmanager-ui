@@ -25,6 +25,9 @@
                   [(ngModel)]="product.name"
                   formControlName="name"
                 >
+                <div *ngIf="invalidForm && !productForm.controls['name'].valid" class="alert alert-danger">
+                  A 2 character long product name is required.
+                </div>
               </div>
               <div class="form-group">
                 <label for="code">Product code</label>
@@ -39,6 +42,12 @@
                   [(ngModel)]="product.code"
                   formControlName="code"
                 >
+                <div *ngIf="invalidForm && !productForm.controls['code'].valid" class="alert alert-danger">
+                  A 2 character long product code is required.
+                </div>
+                <div *ngIf="invalidForm && isCodeTaken" class="alert alert-danger">
+                  This code is already taken.
+                </div>
               </div>
               <div class="form-group">
                 <label for="model">Product model</label>
@@ -53,6 +62,9 @@
                   [(ngModel)]="product.model"
                   formControlName="model"
                 >
+                <div *ngIf="invalidForm && !productForm.controls['model'].valid" class="alert alert-danger">
+                  A 2 character long product model is required.
+                </div>
               </div>
             </div>
             <div class="col">
@@ -69,6 +81,9 @@
                   [(ngModel)]="product.series"
                   formControlName="series"
                 >
+                <div *ngIf="invalidForm && !productForm.controls['series'].valid" class="alert alert-danger">
+                  A 2 character long product series is required.
+                </div>
               </div>
               <div class="form-group">
                 <label for="brand">Brand</label>
@@ -78,6 +93,9 @@
                     {{brand.name}}
                   </option>
                 </select>
+                <div *ngIf="invalidForm && selectedBrand === undefined" class="alert alert-danger">
+                  A brand is required. If it isn't created ask an admin to create one on the <a href="/brands" class="btn-link">Brand panel</a>
+                </div>
               </div>
               <div class="form-group">
                 <label for="measure">Unit of measure</label>
@@ -87,38 +105,47 @@
                     {{measure.name}}
                   </option>
                 </select>
+                <div *ngIf="invalidForm && selectedMeasure === undefined" class="alert alert-danger">
+                  A measure is required. If it isn't created ask an admin to create one on the <a href="/measures" class="btn-link">Measure panel</a>
+                </div>
               </div>
             </div>
           </div>
           <div class="form-row">
             <div class="col">
               <div class="form-group">
-                <label for="costBeforeTax">Cost Before Tax</label>
+                <label for="cost">Cost</label>
                 <input
-                  placeholder="Cost Before tax"
-                  id="costBeforeTax"
+                  placeholder="Cost"
+                  id="cost"
                   type="number"
                   class="form-control"
                   data-length="20"
                   required
-                  name="costBeforeTax"
-                  [(ngModel)]="product.costBeforeTax"
-                  formControlName="costBeforeTax"
+                  name="cost"
+                  [(ngModel)]="product.cost"
+                  formControlName="cost"
                 >
+                <div *ngIf="invalidForm && !productForm.controls['cost'].valid" class="alert alert-danger">
+                  A cost is required.
+                </div>
               </div>
               <div class="form-group">
-                <label for="costAfterTax">Cost After Tax</label>
+                <label for="price">Product price</label>
                 <input
-                  placeholder="Cost after tax"
-                  id="costAfterTax"
+                  placeholder="Product price"
+                  id="price"
                   type="number"
                   class="form-control"
                   data-length="20"
                   required
-                  name="costAfterTax"
-                  [(ngModel)]="product.costAfterTax"
-                  formControlName="costAfterTax"
+                  name="price"
+                  [(ngModel)]="product.price"
+                  formControlName="price"
                 >
+                <div *ngIf="invalidForm && !productForm.controls['price'].valid" class="alert alert-danger">
+                  A price is required.
+                </div>
               </div>
               <div class="form-group">
                 <label for="infoUrl">Information link</label>
@@ -133,6 +160,9 @@
                   [(ngModel)]="product.infoUrl"
                   formControlName="infoUrl"
                 >
+                <div *ngIf="invalidForm && !productForm.controls['infoUrl'].valid" class="alert alert-danger">
+                  A info link is required.
+                </div>
               </div>
             </div>
             <div class="col">
@@ -149,6 +179,9 @@
                   [(ngModel)]="product.longDescription"
                   formControlName="longDescription"
                 ></textarea>
+                <div *ngIf="invalidForm && !productForm.controls['longDescription'].valid" class="alert alert-danger">
+                  A long description is required.
+                </div>
               </div>
               <div class="form-group">
                 <label for="shortDescription">Short product description</label>
@@ -163,6 +196,9 @@
                   [(ngModel)]="product.shortDescription"
                   formControlName="shortDescription"
                 ></textarea>
+                <div *ngIf="invalidForm && !productForm.controls['shortDescription'].valid" class="alert alert-danger">
+                  A short description is required.
+                </div>
               </div>
               <div class="form-group">
                 <label for="quantity">Product initial quantity</label>
@@ -191,6 +227,9 @@
                     {{category.singular_name}}
                   </option>
                 </select>
+              </div>
+              <div *ngIf="invalidForm && selectedCategories.length === 0" class="alert alert-danger">
+                A category is required. If it isn't created ask an admin to create one on the <a class="btn-link" href="/categories">Category panel</a>
               </div>
             </div>
             <div class="col">

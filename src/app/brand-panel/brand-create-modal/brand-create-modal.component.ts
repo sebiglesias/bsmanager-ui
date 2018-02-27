@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {Brand, User} from '../../models';
 import {BrandService} from '../brand.service';
 import {UserService} from '../../user-panel/user.service';
@@ -19,12 +19,14 @@ export class BrandCreateModalComponent implements OnInit {
 
   brand: Brand = {
     name: '',
-    infoURL: '',
+    infoUrl: '',
     observations: ''
   };
-  brandForm;
+  brandForm: FormGroup;
   users: User[] = [];
   brands: Brand[];
+  invalidForm = false;
+  isNameTaken = false;
 
   @Output() createdBrandAlert = new EventEmitter<boolean>();
 
@@ -34,17 +36,10 @@ export class BrandCreateModalComponent implements OnInit {
 
   constructor(private brandService: BrandService, private userService: UserService) {
     this.brandForm = new FormGroup({
-      name: new FormControl(this.brand.name, [Validators.required, Validators.minLength(3)]),
-      infoURL: new FormControl(this.brand.infoURL, [Validators.required]),
-      observations: new FormControl(this.brand.observations, [Validators.required])
+      name: new FormControl('', [Validators.required, Validators.minLength(2)]),
+      infoUrl: new FormControl('', Validators.required),
+      observations: new FormControl('', Validators.required)
     });
-  }
-
-  forbiddenNameValidator(nameRe: string): ValidatorFn {
-    return (control: AbstractControl): {[key: string]: any} => {
-      const forbidden = (control.value);
-      return forbidden ? {'forbiddenName': {value: control.value}} : null;
-    };
   }
 
   ngOnInit() {
@@ -88,12 +83,33 @@ export class BrandCreateModalComponent implements OnInit {
   }
 
   createBrand() {
-    this.brandService.createBrand(this.brandForm.value).subscribe( () => this.throwAlert() );
-    this.hide();
+    if (this.brandForm.valid) {
+      this.invalidForm = false;
+      const a = this.brands.filter(b => {
+        return b.name === this.brandForm.value.name;
+      });
+      if (a.length > 0) {
+        this.invalidForm = true;
+        this.isNameTaken = true;
+        return;
+      } else {
+        this.isNameTaken = false;
+        this.brandService.createBrand(this.brandForm.value).subscribe(
+          () => this.throwAlert(true),
+          err => this.throwAlert(false));
+        this.hide();
+        this.getBrands();
+        return;
+      }
+    }
+    this.invalidForm = true;
   }
 
-  throwAlert() {
+  throwAlert(b: boolean) {
     this.createdBrandAlert.emit(true);
+  }
+
+  private reloadBrands() {
   }
 }
 

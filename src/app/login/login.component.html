@@ -6,7 +6,7 @@
           <h3 class="card-title">Login</h3>
         </div>
         <div class="card-body">
-          <form [formGroup]="loginForm" (ngSubmit)="this.login()">
+          <form [formGroup]="loginForm">
               <div class="form-group">
                 <label for="email">Username</label>
                 <input
@@ -18,6 +18,9 @@
                   [(ngModel)]="user.email"
                   formControlName="email">
               </div>
+            <div *ngIf="invalidForm && !loginForm.controls['email'].valid" class="alert alert-danger">
+              This isn't a valid username
+            </div>
               <div class="form-group">
                 <label for="password">Password</label>
                 <input
@@ -30,7 +33,22 @@
                   formControlName="password"
                   >
               </div>
-              <input type="submit" class="btn btn-lg btn-primary btn-block" value="Login">
+            <div *ngIf="invalidForm && !loginForm.controls['password'].valid" class="alert alert-danger">
+              You must login with a password.
+            </div>
+            <div class="form-group">
+              <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                Forgot your password?
+              </button>
+            </div>
+            <div class="form-group">
+              <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                  You will need to contact your administrator in order to get your password resetted.
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-lg btn-primary btn-block" (click)="this.login()">Login</button>
           </form>
         </div>
       </div>

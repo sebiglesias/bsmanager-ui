@@ -20,7 +20,11 @@ export class AuthService {
   }
 
   getCurrentUser(): User {
-    return JSON.parse(localStorage.getItem('user'));
+    return JSON.parse(localStorage.getItem(this.userKey));
+  }
+
+  isAdmin(): boolean {
+    return this.getCurrentUser() !== null && this.getCurrentUser().admin;
   }
 
   setUser(user: User) {

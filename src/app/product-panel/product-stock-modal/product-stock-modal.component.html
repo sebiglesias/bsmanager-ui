@@ -12,12 +12,33 @@
         <form [formGroup]="productForm" (ngSubmit)="this.addStock()">
           <div class="form-row">
             <p>The product {{product.name}} with code {{product.code}} has currently {{product.quantity}} {{product.measure.abbreviation}}</p>
-            <h1>How many more units do you want to add?</h1>
+            <h1>How many units do you want to add?</h1>
           </div>
           <div class="form-row">
-            <div class="form-group">
-              <label for="stock">New units to add</label>
-              <input id="stock" type="number" class="form-control" formControlName="stock">
+            <div class="col">
+              <div class="form-group">
+                <label for="stock">New units to add</label>
+                <input id="stock" type="number" class="form-control" formControlName="stock">
+                <div *ngIf="invalidForm && !productForm.controls['stock'].valid" class="alert alert-danger">
+                  At least add 1 unit of stock.
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="external">Supplier's email</label>
+                <input class="form-control" id="external" type="email" formControlName="external">
+                <div *ngIf="invalidForm && !productForm.controls['external'].valid" class="alert alert-danger">
+                  Supplier's email is required.
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="payment">Choose a Payment option</label>
+                <select id="payment" class="custom-select" formControlName="payment" (change)="addPayment($event.target.value)">
+                  <option *ngFor="let p of paymentOptions" value="{{p}}" required>{{p}}</option>
+                </select>
+                <div *ngIf="invalidForm && !productForm.controls['payment'].valid" class="alert alert-danger">
+                  You need to select a valid payment option.
+                </div>
+              </div>
             </div>
           </div>
           <div class="modal-footer">
@@ -25,7 +46,7 @@
               <button type="button" class="btn btn-primary"  aria-label="Close" (click)="this.hide()">
                 Cancel
               </button>
-              <button type="submit" class="btn btn-success" aria-label="Close" (click)="this.hide()">
+              <button type="submit" class="btn btn-success" aria-label="Close">
                 Add stock
               </button>
             </div>

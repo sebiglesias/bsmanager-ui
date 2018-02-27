@@ -1,10 +1,12 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import {Brand, Category, Measure, Product, User} from '../../models';
+import {Brand, Category, Measure, Order, OrderDetail, Product, User} from '../../models';
 import {ProductService} from '../product.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {CategoryService} from '../../category-panel/category.service';
 import {BrandService} from '../../brand-panel/brand.service';
 import {MeasureService} from '../../measure-panel/measure.service';
+import {AuthService} from '../../auth/auth.service';
+import {SalesService} from '../../sales-panel/sales.service';
 
 @Component({
   selector: 'app-product-stock-modal',
@@ -22,8 +24,8 @@ export class ProductStockModalComponent implements OnInit {
   product: Product = {
     code: '',
     name: '',
-    costAfterTax: 0,
-    costBeforeTax: 0,
+    cost: 0,
+    price: 0,
     infoUrl: '',
     longDescription: '',
     shortDescription: '',
@@ -31,7 +33,7 @@ export class ProductStockModalComponent implements OnInit {
     series: '',
     brand: {
       name: '',
-      infoURL: '',
+      infoUrl: '',
       observations: ''
     },
     categories: [{
@@ -52,7 +54,12 @@ export class ProductStockModalComponent implements OnInit {
   selectedCategories: Category[];
   selectedMeasure: Measure;
   selectedBrand: Brand;
-
+  paymentOptions: string[] = ['CASH', 'DEBIT', 'CREDIT', 'BANK'];
+  payment: string;
+  external: string;
+  currentUserEmail: string;
+  order: Order;
+  invalidForm = false;
   @Output() stockProductAlert = new EventEmitter<boolean>();
 
   @Output('closed') closeEmitter: EventEmitter < ModalResult > = new EventEmitter < ModalResult > ();
@@ -64,13 +71,18 @@ export class ProductStockModalComponent implements OnInit {
     private categoryService: CategoryService,
     private brandService: BrandService,
     private measureService: MeasureService,
+    private authService: AuthService,
+    private salesService: SalesService,
   ) {
     this.productForm = new FormGroup({
-      stock: new FormControl(null, [Validators.required])
+      stock: new FormControl(null, [Validators.required, Validators.min(1)]),
+      external: new FormControl(null, [Validators.required]),
+      payment: new FormControl(null, [Validators.required])
     });
   }
 
   ngOnInit() {
+    this.currentUserEmail = this.authService.getCurrentUser().email;
     this.getBrands();
     this.getCategories();
     this.getMeasures();
@@ -106,13 +118,37 @@ export class ProductStockModalComponent implements OnInit {
   }
 
   addStock() {
-    const updatedProduct = this.product;
-    updatedProduct.quantity = this.product.quantity + this.productForm.value.stock;
-    this.productService.updateProduct(updatedProduct).subscribe( () => this.throwAlert() );
-    this.hide();
+    if (this.productForm.valid) {
+      const updatedProduct = this.product;
+      updatedProduct.quantity = this.product.quantity + this.productForm.value.stock;
+      this.order = {
+        sale: false,
+        employee: this.currentUserEmail,
+        external: this.productForm.value.email,
+        payment: this.productForm.value.payment,
+        items: this.productForm.value.stock,
+        date: new Date(),
+        price: this.product.cost
+      };
+      this.salesService.createOrder(this.order).subscribe(o => {
+        const oDetail: OrderDetail = {
+          order: o,
+          product: this.product,
+          quantity: this.productForm.value.stock,
+          price: this.product.cost
+        };
+        delete oDetail['product']['@product'];
+        this.salesService.createOrderDetail(oDetail).subscribe(c => {
+          this.productService.updateProduct(updatedProduct).subscribe(() => this.throwAlert(true), err => this.throwAlert(false));
+          this.hide();
+          return;
+        });
+      });
+    }
+    this.invalidForm = true;
   }
 
-  throwAlert() {
+  throwAlert(b: boolean) {
     this.stockProductAlert.emit(true);
   }
 
@@ -169,6 +205,10 @@ export class ProductStockModalComponent implements OnInit {
     this.selectedCategories = this.selectedCategories.filter( group => {
       return group.id !== Number(id);
     });
+  }
+
+  addPayment(s: string) {
+    this.payment = s;
   }
 }
 
