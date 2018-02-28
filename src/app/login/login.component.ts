@@ -66,7 +66,6 @@ export class LoginComponent implements OnInit {
   }
 
   throwToast(created: boolean): boolean {
-    console.log('entre a createdToast');
     if (created) {
       this.toastr.success('Success!', 'You are now logged in.');
     } else {

@@ -49,6 +49,7 @@ export class ProductComponent implements OnInit {
   };
   order: 'name';
   reverse = true;
+  isValidImport = true;
 
   constructor(private productService: ProductService,
               public toastr: ToastsManager,
@@ -109,6 +110,7 @@ export class ProductComponent implements OnInit {
   }
 
   importProductOpenModal() {
+    this.isValidImport = true;
     this.importModal.show();
   }
 
@@ -191,6 +193,7 @@ export class ProductComponent implements OnInit {
       .getAllProducts()
       .subscribe(
         products => {
+          this.isValidImport = false;
           this.products = products;
           this.indivStock(p.product.name, p.units, true);
           this.reFilter();

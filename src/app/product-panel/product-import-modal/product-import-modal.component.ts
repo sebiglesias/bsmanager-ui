@@ -157,9 +157,6 @@ export class ProductImportModalComponent implements OnInit {
         const workbook = XLSX.read(bstr, {type: 'binary'});
         const first_sheet_name = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[first_sheet_name];
-        console.log(XLSX.utils.sheet_to_json(worksheet, {
-          raw: true
-        }));
         const xlsToJson: StockXls[] = XLSX.utils.sheet_to_json(worksheet, {raw: true});
         xlsToJson.forEach(s => {
           this.productService.getProductByCode(s.code).subscribe(p => {

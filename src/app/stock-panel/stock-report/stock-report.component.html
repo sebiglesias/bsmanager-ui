@@ -1,7 +1,9 @@
 <div class="container">
   <br>
   <h3 class="element">Stock history report</h3>
-  <button type="button" class="btn btn-success" (click)="exportExcel()">Export report as Excel</button>
+  <button type="button" class="btn btn-success my-button" (click)="exportExcel()">
+    Export report as Excel
+  </button>
   <br>
   <div class="row card myCard">
     <div class="card-header">
@@ -75,7 +77,7 @@
           {{getDate(order.date)}}
         </mat-panel-title>
         <mat-panel-description>
-          <b>Employee</b> {{order.employee}} - {{order.payment}} - <b>To</b> {{order.external}}
+          <b> Employee: </b> {{order.employee}} - {{order.payment}} - <b> To: </b> {{order.external}}
         </mat-panel-description>
       </mat-expansion-panel-header>
       <ul class="list-group">

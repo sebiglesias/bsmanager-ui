@@ -216,6 +216,7 @@ export class PosComponent implements OnInit {
   }
 
   openCheckout(order: Order, orderDetails: OrderDetail[], items: number, price: number) {
+    this.isValidCheckout = true;
     this.calculateResults();
     order.price = price;
     order.items = items;
@@ -243,7 +244,6 @@ export class PosComponent implements OnInit {
     if (created) {
       this.toastr.success('The order was created correctly.', 'Success!');
       this.isValidCheckout = false;
-      this.isValidCheckout = true;
     } else {
       this.toastr.error('Couldn\'t created order!', 'There is something wrong with your connection.');
     }

@@ -2,11 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {SalesService} from '../../sales-panel/sales.service';
 import {Order, OrderDetail, User} from '../../models';
 import {UserService} from '../../user-panel/user.service';
-import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
-
-const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-const EXCEL_EXTENSION = '.xlsx';
 
 @Component({
   selector: 'app-stock-report',
@@ -83,7 +79,6 @@ export class StockReportComponent implements OnInit {
   filterFrom(d: any) {
     if (d === undefined || d === null) {
       this.from = new Date(JSON.parse(JSON.stringify(d)));
-      console.log(this.from);
       this.reFilter();
     } else {
       this.from = d;
@@ -137,20 +132,26 @@ export class StockReportComponent implements OnInit {
   }
 
   exportExcel() {
-    this.exportAsExcelFile(this.filteredOrders, 'SalesReport');
+    const convertToCSV2 = this.convertToCSV(JSON.stringify(this.filteredOrders));
+    const exportedFilenmae = 'SalesReport' + '.csv';
+    const blob = new Blob([convertToCSV2], { type: 'text/csv;charset=utf-8;' });
+    FileSaver.saveAs(blob, exportedFilenmae);
   }
 
-  public exportAsExcelFile(json: any[], excelFileName: string): void {
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
-    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
-    this.saveAsExcelFile(excelBuffer, excelFileName);
-  }
+  convertToCSV(objArray) {
+    const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+    let str = '';
 
-  private saveAsExcelFile(buffer: any, fileName: string): void {
-    const data: Blob = new Blob([buffer], {
-      type: EXCEL_TYPE
-    });
-    FileSaver.saveAs(data, fileName + '_export_' + EXCEL_EXTENSION);
+    for (let i = 0; i < array.length; i++) {
+      let line = '';
+      for (const index in array[i]) {
+        if (line !== '') {
+          line += ',';
+        }
+        line += array[i][index];
+      }
+      str += line + '\r\n';
+    }
+    return str;
   }
 }

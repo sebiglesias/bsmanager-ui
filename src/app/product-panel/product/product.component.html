@@ -20,8 +20,9 @@
   <!-- Add Stock Modal -->
   <app-product-stock-modal #stockProductModal id="stockProduct" [showModal]="isStockModalOpen" [title]="'Product Stock'" (stockProductAlert)="stockProductAlert($event)"></app-product-stock-modal>
   <!-- Import Stock Modal -->
-  <app-product-import-modal #importProductModal id="importProduct" [showModal]="isImportModalOpen" [title]="'Import Stock'" (importedProductAlert)="importProductAlert($event)"></app-product-import-modal>
-
+  <div *ngIf="isValidImport">
+    <app-product-import-modal #importProductModal id="importProduct" [showModal]="isImportModalOpen" [title]="'Import Stock'" (importedProductAlert)="importProductAlert($event)"></app-product-import-modal>
+  </div>
 
   <div class="row card myCard">
     <div class="card-header">

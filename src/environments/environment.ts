@@ -7,5 +7,6 @@ export const environment = {
   production: false,
   development: true,
   baseUrl: 'http://localhost:8080',
-  expressUrl: 'http://localhost:3000/api/send'
+  expressUrl: 'http://localhost:3000/api/send',
+  csvUrl: 'http://localhost:3000/api/report/csv'
 };

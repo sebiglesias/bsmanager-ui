@@ -160,7 +160,7 @@ const appRoutes: Routes = [
     MeasureService,
     ProductService,
     SalesService,
-    AdminAuthService
+    AdminAuthService,
   ],
   bootstrap: [AppComponent]
 })

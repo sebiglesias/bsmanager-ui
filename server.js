@@ -4,7 +4,7 @@ const path = require('path');
 const http = require('http');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
-
+const csv = require('express-csv');
 const app = express();
 
 // Parsers for POST data
@@ -23,6 +23,11 @@ app.use(function(req, res, next) {
 
 app.get('/', function(req,res) {
   res.sendStatus(200);
+});
+
+app.post('/api/report/csv', function(req,res) {
+  // const fields = ['sale', 'employee', 'external', 'payment', 'items', 'date', 'price'];
+  res.csv(req.body);
 });
 
 app.post('/api/send', function(req, res) {

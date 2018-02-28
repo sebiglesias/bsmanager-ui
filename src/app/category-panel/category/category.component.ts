@@ -71,8 +71,7 @@ export class CategoryComponent implements OnInit {
           this.reRender();
           this.deleteToast(deleted);
         },
-        error => this.deleteToast(false),
-        () => console.log('completed DeleteCategory'));
+        error => this.deleteToast(false));
   }
 
   updatedCategoryAlert(deleted: boolean) {
@@ -84,8 +83,7 @@ export class CategoryComponent implements OnInit {
           this.reRender();
           this.updatedToast(deleted);
         },
-        error => this.updatedToast(false),
-        () => console.log('completed UpdatedCategory'));
+        error => this.updatedToast(false));
   }
 
   createdCategoryAlert(created: boolean) {
@@ -97,8 +95,7 @@ export class CategoryComponent implements OnInit {
           this.reRender();
           this.createdToast(created);
         },
-        error => this.updatedToast(false),
-        () => console.log('completed CreatedCategory'));
+        error => this.updatedToast(false));
   }
 
   reRender(): void {
@@ -109,7 +106,6 @@ export class CategoryComponent implements OnInit {
   }
 
   deleteToast(deleted: boolean) {
-    console.log('entre a deletedToast');
     if (deleted) {
       this.toastr.success('Success!', 'The category was deleted correctly.');
     } else {
@@ -118,7 +114,6 @@ export class CategoryComponent implements OnInit {
   }
 
   submittedToast(submitted: boolean) {
-    console.log('entre a submittedToast');
     if (submitted) {
       this.toastr.success('Success!', 'The category was added correctly.');
     } else {
@@ -127,7 +122,6 @@ export class CategoryComponent implements OnInit {
   }
 
   updatedToast(updated: boolean) {
-    console.log('entre a updateToast');
     if (updated) {
       this.toastr.success('Success!', 'The category was updated correctly.');
     } else {
@@ -136,7 +130,6 @@ export class CategoryComponent implements OnInit {
   }
 
   createdToast(created: boolean) {
-    console.log('entre a createdToast');
     if (created) {
       this.toastr.success('Success!', 'The category was created correctly.');
     } else {
