@@ -72,7 +72,8 @@ export class SalesReportComponent implements OnInit {
   getDetail(o: Order): OrderDetail[] {
     if (o !== undefined && this.details !== undefined) {
       return this.details.filter( d => {
-        return d.order.id === o.id;
+        const bool = Number(d.order) === o.id;
+        return Number(d.order) === o.id || d.order.id === o.id;
       });
     } else {
       return [];

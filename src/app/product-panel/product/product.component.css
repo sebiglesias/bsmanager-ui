@@ -30,6 +30,7 @@
 }
 
 .my-pagination {
+  margin-top: 10px;
   align-items: center;
   justify-content: center;
 }

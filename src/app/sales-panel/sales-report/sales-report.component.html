@@ -75,12 +75,12 @@
           {{getDate(order.date)}}
         </mat-panel-title>
         <mat-panel-description>
-          {{order.employee}} - {{order.price}}$ {{order.payment}}
+          <b>Employee</b> {{order.employee}} - {{order.price}}$ {{order.payment}} - <b>To</b> {{order.external}}
         </mat-panel-description>
       </mat-expansion-panel-header>
       <ul class="list-group">
         <li class="list-group-item" *ngFor="let detail of getDetail(order)">
-          <b>Product: </b>{{detail.product.name}}<b>Quantity: </b>{{detail.quantity}} - <b>Subtotal: </b> {{detail.product.price * detail.quantity}}
+          <b>Product: </b>{{detail.product.name}} - <b>Quantity: </b>{{detail.quantity}} - <b>Subtotal: </b> {{detail.price}}
         </li>
       </ul>
     </mat-expansion-panel>

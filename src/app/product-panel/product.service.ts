@@ -58,4 +58,10 @@ export class ProductService {
       this.updateProduct(p);
     });
   }
+
+  getProductByCode(code: string): Observable<Product> {
+    return this.http
+      .get(productUrl + '/code/' + code)
+      .catch(this.handleError);
+  }
 }

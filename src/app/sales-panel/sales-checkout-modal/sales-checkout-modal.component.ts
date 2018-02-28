@@ -114,22 +114,27 @@ export class SalesCheckoutModalComponent implements OnInit {
     this.order.employee = this.authService.getCurrentUser().email;
     this.saleService.createOrder(this.order).subscribe(
       smt => {
-        this.orderDetails.forEach( oDetail => {
+        for (let i = 0; i < this.orderDetails.length; i++) {
+          const oDetail = this.orderDetails[i];
           oDetail.order = smt;
           delete oDetail['product']['@product'];
-          this.saleService.createOrderDetail(oDetail).subscribe( () => {
-            const p: Product = oDetail.product;
-            p.quantity = p.quantity - oDetail.quantity;
-            this.productService.updateProduct(p).subscribe( pro => {
+          delete oDetail['order']['@orders'];
+          oDetail.price = oDetail.product.price * oDetail.quantity;
+          this.saleService.createOrderDetail(oDetail).subscribe( nextO => {
+            const p: Product = nextO.product;
+            p.quantity = p.quantity - nextO.quantity;
+            this.productService.updateProduct(p).subscribe( () => {
               this.throwProdAlert(true);
             }, error2 => this.throwProdAlert(false));
           });
-        });
+        }
         this.throwAlert(true);
-        this.hide();
         this.sendTicketMail(smt);
     }, err =>
-        this.throwAlert(false));
+        this.throwAlert(false),
+      () => {
+        this.hide();
+      });
   }
 
   addPayment(s: string) {

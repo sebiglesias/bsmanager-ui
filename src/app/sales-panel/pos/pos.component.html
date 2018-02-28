@@ -2,42 +2,40 @@
   <!-- Detail Modal -->
   <app-product-detail-modal #detailProductModal id="detailProduct" [showModal]="isDetailModalOpen" [title]="'Product Info'" (detailProductAlert)="detailProductAlert($event)"></app-product-detail-modal>
   <!-- Checkout Modal -->
-  <app-sales-checkout-modal #checkoutSalesModal id="checkoutSale" [showModal]="isCheckoutModalOpen" [title]="'Checkout'" (checkoutSalesAlert)="checkoutSalesAlert($event)" (productModifiedAlert)="productModifiedAlert($event)"></app-sales-checkout-modal>
-
+  <div *ngIf="isValidCheckout">
+    <app-sales-checkout-modal #checkoutSalesModal id="checkoutSale" [showModal]="isCheckoutModalOpen" [title]="'Checkout'" (checkoutSalesAlert)="checkoutSalesAlert($event)" (productModifiedAlert)="productModifiedAlert($event)"></app-sales-checkout-modal>
+  </div>
   <div class="row row-offcanvas row-offcanvas-right">
 
     <div class="col-12 col-md-9">
       <div class="row card myCard">
         <div class="card-header">
-          <h4 class="card-title my-title">Filter by</h4>
-          <div class="btn-group my-buttons" role="group">
-            <button class="btn btn-outline-secondary" (click)="setList(true)"><i class="material-icons">view_headline</i></button>
-            <button class="btn btn-outline-secondary" (click)="setList(false)"><i class="material-icons">view_comfy</i></button>
-          </div>
+          <h4 class="card-title product">Filter by</h4>
         </div>
         <div class="card-body">
-          <form>
+          <div>
             <div class="form-row">
               <div class="col">
-                <label for="orders">Order By
-                  <button *ngIf="reverse" type="button" class="btn-secondary btn-sm"><i class="material-icons" (click)="setReverse()">arrow_upward</i></button>
-                  <button *ngIf="!reverse" type="button" class="btn-secondary btn-sm"><i class="material-icons" (click)="setReverse()">arrow_downward</i></button>
+                <label for="orders" class="align-content-center">
+                  <i class="material-icons" *ngIf="reverse" (click)="setReverse()">arrow_upward</i>
+                  <i class="material-icons" *ngIf="!reverse"(click)="setReverse()">arrow_downward</i>
+                  Order By
                 </label>
                 <div class="form-group" id="orders">
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="nameRadio" id="nameRadio" value="name" [(ngModel)]="orderBy" checked>
+                    <input class="form-check-input" type="radio" name="nameRadio" id="nameRadio" value="name" [(ngModel)]="prodOrder" checked>
                     <label class="form-check-label" for="nameRadio">
                       Name
                     </label>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="priceRadio" id="priceRadio" value="costAfterTax" [(ngModel)]="orderBy">
+                    <input class="form-check-input" type="radio" name="priceRadio" id="priceRadio" value="price" [(ngModel)]="prodOrder">
                     <label class="form-check-label" for="priceRadio">
                       Price
                     </label>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="quantityRadio" id="quantityRadio" value="quantity" [(ngModel)]="orderBy">
+                    <input class="form-check-input" type="radio" name="quantityRadio" id="quantityRadio" value="quantity" [(ngModel)]="prodOrder">
                     <label class="form-check-label" for="quantityRadio">
                       Quantity
                     </label>
@@ -65,17 +63,17 @@
               <div class="col">
                 <div class="form-group">
                   <label for="search">Search</label>
-                  <input class="form-control" id="search" name="search" [(ngModel)]="productFilter.name">
+                  <input type="text" class="form-control" id="search" [(ngModel)]="productFilter.name">
                 </div>
               </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
       <br>
       <div class="catalogue" *ngIf="filteredProducts !== undefined">
         <ul class="list-group" *ngIf="list">
-          <li class="list-group-item" *ngFor="let prod of filteredProducts | filterBy: productFilter | orderBy: order : reverse | paginate: { itemsPerPage: itemsPerPage, currentPage: page }; let i = index">
+          <li class="list-group-item" *ngFor="let prod of filteredProducts | filterBy: productFilter | orderBy: prodOrder : reverse | paginate: { itemsPerPage: itemsPerPage, currentPage: page }; let i = index">
             <ul class="my-title list-inline">
               <li class="list-inline-item">{{prod.name}}</li>
               <li class="list-inline-item">Code: {{prod.code}}</li>

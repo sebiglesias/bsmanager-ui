@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
-import {Order, OrderDetail} from '../models';
+import {Order, OrderDetail, ViewOrderDetail} from '../models';
 
 const orderUrl = environment.baseUrl + '/order';
 const orderDetailUrl = environment.baseUrl + '/orderDetail';
@@ -70,6 +70,11 @@ export class SalesService {
       .catch(this.handleError);
   }
 
+  public getOrderOrderDetail(orderId: number): Observable<ViewOrderDetail>{
+    return this.http
+      .get(orderDetailUrl + '/order/' + orderId)
+      .catch(this.handleError);
+  }
 
   private handleError (error: Response | any) {
     console.error('OrderService::handleError', error);

@@ -75,7 +75,7 @@
           {{getDate(order.date)}}
         </mat-panel-title>
         <mat-panel-description>
-          {{order.employee}} - {{order.price}}$ {{order.payment}}
+          <b>Employee</b> {{order.employee}} - {{order.payment}} - <b>To</b> {{order.external}}
         </mat-panel-description>
       </mat-expansion-panel-header>
       <ul class="list-group">

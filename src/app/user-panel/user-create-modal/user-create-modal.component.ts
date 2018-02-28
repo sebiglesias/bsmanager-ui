@@ -50,14 +50,14 @@ export class UserCreateModalComponent implements OnInit {
     private userService: UserService
   ) {
     this.userForm = new FormGroup({
-      firstname: new FormControl(null, [Validators.required]),
-      lastname: new FormControl(null, [Validators.required]),
-      taxNum: new FormControl(null, [Validators.required]),
-      address: new FormControl(null, [Validators.required]),
-      birthday: new FormControl(null, [Validators.required]),
+      firstname: new FormControl(null, Validators.required),
+      lastname: new FormControl(null, Validators.required),
+      taxNum: new FormControl(null, Validators.required),
+      address: new FormControl(null, Validators.required),
+      birthday: new FormControl(null, Validators.required),
       email: new FormControl(null, [Validators.required, Validators.email]),
-      telephone: new FormControl(null, [Validators.required]),
-      admin: new FormControl(null, [Validators.required])
+      telephone: new FormControl(null, Validators.required),
+      admin: new FormControl(null, )
     });
   }
 

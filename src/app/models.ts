@@ -85,9 +85,16 @@ export interface OrderDetail {
 }
 
 export interface StockXls {
-  code: number;
+  code: string;
   units: number;
   product: Product;
+}
+
+export interface ViewOrderDetail {
+  product: Product;
+  price: number;
+  quantity: number;
+
 }
 
 export enum PaymentOptions {

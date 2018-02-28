@@ -65,6 +65,7 @@ export class ProductImportModalComponent implements OnInit {
 
   show() {
     this.showModal = true;
+    this.validProducts = [];
   }
 
   hide() {
@@ -140,38 +141,45 @@ export class ProductImportModalComponent implements OnInit {
   }
 
   uploadStock() {
-    const fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      this.arrayBuffer = fileReader.result;
-      const data = new Uint8Array(this.arrayBuffer);
-      const arr = new Array();
-      for (let i = 0; i !== data.length; ++i) {
-        arr[i] = String.fromCharCode(data[i]);
-      }
-      const bstr = arr.join('');
-      const workbook = XLSX.read(bstr, {type: 'binary'});
-      const first_sheet_name = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[first_sheet_name];
-      console.log(XLSX.utils.sheet_to_json(worksheet, {
-        raw: true
-      }));
-      const xlsToJson: StockXls[] = XLSX.utils.sheet_to_json(worksheet, {raw: true});
-      xlsToJson.forEach( s => {
-        this.productService.getProductById(s.code).subscribe( p => {
-          s.product = p;
-          this.uploadedProducts.push(s);
-        }, err => {
-          this.uploadedProducts.push(s);
+    if (this.file === undefined) {
+      this.isFileInvalid = true;
+    }
+    if (this.firstFormGroup.valid) {
+      const fileReader = new FileReader();
+      fileReader.onload = (e) => {
+        this.arrayBuffer = fileReader.result;
+        const data = new Uint8Array(this.arrayBuffer);
+        const arr = new Array();
+        for (let i = 0; i !== data.length; ++i) {
+          arr[i] = String.fromCharCode(data[i]);
+        }
+        const bstr = arr.join('');
+        const workbook = XLSX.read(bstr, {type: 'binary'});
+        const first_sheet_name = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[first_sheet_name];
+        console.log(XLSX.utils.sheet_to_json(worksheet, {
+          raw: true
+        }));
+        const xlsToJson: StockXls[] = XLSX.utils.sheet_to_json(worksheet, {raw: true});
+        xlsToJson.forEach(s => {
+          this.productService.getProductByCode(s.code).subscribe(p => {
+            s.product = p;
+            this.uploadedProducts.push(s);
+          }, err => {
+            this.uploadedProducts.push(s);
+          });
         });
-      });
-    };
-    if (this.file !== undefined) {
-      this.isFileInvalid = false;
-      this.invalidFirstForm = false;
-      fileReader.readAsArrayBuffer(this.file);
+      };
+      if (this.file !== undefined) {
+        this.isFileInvalid = false;
+        this.invalidFirstForm = false;
+        fileReader.readAsArrayBuffer(this.file);
+      } else {
+        this.invalidFirstForm = true;
+        this.isFileInvalid = true;
+      }
     }else {
       this.invalidFirstForm = true;
-      this.isFileInvalid = true;
     }
   }
 
@@ -201,12 +209,13 @@ export class ProductImportModalComponent implements OnInit {
         }, err => console.log(err));
       });
     }, err => console.log(err));
-    this.validProducts = [];
+    this.uploadedProducts = [];
+    this.external = '';
+    this.paymentMethod = '';
   }
 
   validateProducts() {
-    const b: boolean = this.secondFormGroup.value.approved;
-    if (b) {
+    if (this.secondFormGroup.valid) {
       this.invalidSecondForm = false;
       this.validProducts = this.uploadedProducts.filter( p => {
         return p.product !== null;

@@ -158,7 +158,9 @@ export class ProductEditModalComponent implements OnInit {
         return;
       } else {
         this.isCodeTaken = false;
-        delete updatedProduct['categories']['@category'];
+        for (let x = 0; x < updatedProduct['categories'].length; x++) {
+          delete updatedProduct['categories'][x]['@category'];
+        }
         this.productService.updateProduct(updatedProduct).subscribe(
           () => this.throwAlert(true),
           err => this.throwAlert(false)

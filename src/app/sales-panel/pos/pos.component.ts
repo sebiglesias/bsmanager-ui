@@ -35,7 +35,8 @@ export class PosComponent implements OnInit {
   brands: Brand[] = [];
   categories: Category[] = [];
   page = 1;
-  orderBy: 'name';
+  prodOrder: 'name';
+  isValidCheckout = true;
 
   constructor(private productService: ProductService,
               private authService: AuthService,
@@ -53,11 +54,6 @@ export class PosComponent implements OnInit {
     this.getProducts();
     this.getBrands();
     this.getCategories();
-  }
-
-
-  setList(l: boolean) {
-    this.list = l;
   }
 
   filterBrand(b: number) {
@@ -170,6 +166,7 @@ export class PosComponent implements OnInit {
     let auxTotal = 0;
     this.orderDetails.forEach( oDetail => {
       auxTotal += oDetail.product.price * oDetail.quantity;
+      oDetail.price = oDetail.product.price * oDetail.quantity;
     });
     this.totalPrice = auxTotal;
   }
@@ -244,7 +241,9 @@ export class PosComponent implements OnInit {
 
   checkoutToast(created: boolean) {
     if (created) {
-      this.toastr.success('Success!', 'The order was created correctly.');
+      this.toastr.success('The order was created correctly.', 'Success!');
+      this.isValidCheckout = false;
+      this.isValidCheckout = true;
     } else {
       this.toastr.error('Couldn\'t created order!', 'There is something wrong with your connection.');
     }
